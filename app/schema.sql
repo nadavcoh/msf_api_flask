@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS user;
+
+CREATE TABLE user (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  frame TEXT NOT NULL,
+  gold TEXT
+);

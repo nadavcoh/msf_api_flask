@@ -1,0 +1,6 @@
+Authlib
+Flask
+Flask_Login
+humanize
+redis
+pyOpenSSL
