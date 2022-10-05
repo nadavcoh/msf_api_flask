@@ -4,4 +4,4 @@ SSL
 refresh token
 sort materials
 - [ ] redirect to https://hostname
-- [ ] load redirect_url from config
+- [x] load redirect_url from config
