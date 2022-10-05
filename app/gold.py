@@ -40,7 +40,9 @@ def get_gold_from_db():
     resp = db.execute(
         "SELECT gold FROM user WHERE id = ?", (current_user.id,)
     ).fetchone()
-    return json.loads(resp[0])
+    if resp is not None:
+        resp = json.loads(resp[0])
+    return resp
 
 def set_gold_to_db(gold):
     db = get_db()
