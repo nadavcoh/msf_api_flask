@@ -1,5 +1,7 @@
 # msf_api_flask - WIP
 ## Instructions
+### Install dependancies
+* Redis - [Link]()
 ### Clone
 ```sh
 git clone https://github.com/nadavcoh/msf_api_flask.git
