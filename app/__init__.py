@@ -22,7 +22,7 @@ from humanize import naturaltime
 # Internal imports
 # from app.db import init_db_command
 from .user import User
-from .msf_api import get_msf_api, API_SERVER
+from .msf_api import get_msf_api, API_SERVER, init_msf_api
 from .gold import get_gold, update_gold
 from .farming import get_farming
 
@@ -57,6 +57,8 @@ def create_app(test_config=None):
     @login_manager.user_loader
     def load_user(user_id):
         return User.get(user_id)
+
+    init_msf_api()
 
     @app.route("/")
     def index():
