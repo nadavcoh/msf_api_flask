@@ -31,7 +31,7 @@ def update_gold():
 
 def get_gold():
     current_gold = get_gold_from_db()
-    if current_gold is None:
+    if not current_gold:
         current_gold = update_gold()
     return current_gold
 
@@ -42,6 +42,8 @@ def get_gold_from_db():
     ).fetchone()
     if resp[0]:
         resp = json.loads(resp[0])
+    else:
+        resp = resp[0]
     return resp
 
 def set_gold_to_db(gold):
