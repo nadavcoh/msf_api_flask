@@ -40,7 +40,7 @@ def get_gold_from_db():
     resp = db.execute(
         "SELECT gold FROM user WHERE id = ?", (current_user.id,)
     ).fetchone()
-    if resp:
+    if resp[0]:
         resp = json.loads(resp[0])
     return resp
 
