@@ -1,17 +1,29 @@
-# msf_api_flask
-# WIP
-
-<code>
+# msf_api_flask - WIP
+## Instructions
+### Clone
+```sh
 git clone https://github.com/nadavcoh/msf_api_flask.git
 cd msf_api_flask
-</code>
+```
+### venv - Windows
+```bat
 py -3 -m venv venv
 venv\Scripts\activate
-
+```
+### venv - Linux/Mac
+```sh
 python3 -m venv venv
 . venv/bin/activate
-
+```
+### Requerments
+```sh
 pip install -r requirements.txt
-
+```
+### Initialize
+```sh
 flask init-db
+```
+### Run
+```
 flask --debug run --cert=adhoc
+```

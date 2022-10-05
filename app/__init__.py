@@ -82,10 +82,8 @@ def create_app(test_config=None):
 
     @app.route("/login")
     def login():
-        # redirect_uri = url_for('callback', _external=True)
         msf_api = get_msf_api()
-        redirect_uri = "https://localhost:2705/callback"
-        return msf_api.authorize_redirect(redirect_uri)
+        return msf_api.authorize_redirect()
 
     @app.route("/callback")
     def callback():
@@ -100,7 +98,7 @@ def create_app(test_config=None):
         user_id = token["userinfo"]["aud"][0]
 
         endpoint = "/player/v1/card"
-        response = msf_api.get(API_SERVER + endpoint)
+        response = msf_api.get(endpoint)
         card = response.json()
         user_name = card["data"]["name"]
         user_icon = card["data"]["icon"]
