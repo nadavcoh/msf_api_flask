@@ -19,6 +19,8 @@ python3 -m venv venv
 ```sh
 pip install -r requirements.txt
 ```
+### Configure
+Rename `instance/config_example.py` to `instence/config.py` and add your app details.
 ### Initialize
 ```sh
 flask init-db
