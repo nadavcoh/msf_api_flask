@@ -1,7 +1,7 @@
 # msf_api_flask - WIP
 ## Instructions
 ### Install dependancies
-* Redis - [Link](https://redis.io/docs/getting-started/installation/)
+* Redis - (https://redis.io/docs/getting-started/installation/)
 ### Clone
 ```sh
 git clone https://github.com/nadavcoh/msf_api_flask.git
@@ -30,6 +30,20 @@ flask init-db
 ### Run
 ```
 flask --debug run --cert=adhoc
+```
+### [SSL](https://werkzeug.palletsprojects.com/en/2.2.x/serving/#ssl)
+```python
+>>> from werkzeug.serving import make_ssl_devcert
+>>> make_ssl_devcert('key', host='localhost')
+('/path/to/the/key.crt', '/path/to/the/key.key')
+```
+```sh
+flask --debug run --cert=cert.crt --key=key.key
+```
+### External Requests
+Only if you trust your local network.
+```sh
+--host=0.0.0.0
 ```
 
 [Todo](todo.md)
