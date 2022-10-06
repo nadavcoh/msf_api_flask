@@ -144,3 +144,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 >>>>>>> afd55ea47546eda304cf2f79011658b99f6ede84
+key.crt
+key.key
+run.sh
