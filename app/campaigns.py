@@ -9,7 +9,7 @@ def get_campaigns_from_api() -> dict:
     params = {"statsFormat": "csv",
           "itemFormat": "id",
           "traitFormat": "id"}
-    r = msf_api.get(API_SERVER + endpoint, params=params)
+    r = msf_api.get(API_SERVER + endpoint, params=params, token=session["token"])
     data = r.json()
 
     #if (current_chars_hash != data["meta"]["hashes"]["chars"]):
@@ -61,7 +61,7 @@ def get_campaign_from_api(campaign_name: str) -> dict:
               "nodeInfo": "part",
               "nodeRewards": "full",
               "pieceInfo": "none"}
-    r = msf_api.get(API_SERVER + endpoint, params=params)
+    r = msf_api.get(API_SERVER + endpoint, params=params, token=session["token"])
     data = r.json()
 
     #if (current_chars_hash != data["meta"]["hashes"]["chars"]):
