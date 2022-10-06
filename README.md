@@ -38,7 +38,7 @@ flask --debug run --cert=adhoc
 ('/path/to/the/key.crt', '/path/to/the/key.key')
 ```
 ```sh
-flask --debug run --cert=cert.crt --key=key.key
+flask --debug run --cert=key.crt --key=key.key
 ```
 ### External Requests
 Only if you trust your local network.

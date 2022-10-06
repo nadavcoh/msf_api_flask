@@ -1,7 +1,7 @@
-https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/
-hashes
-SSL
-refresh token
-sort materials
-- [ ] redirect to https://hostname
+- [ ] https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/
+- [ ] hashes
+- [x] SSL
+- [ ] refresh token
+- [ ] sort materials
+- [x] ~~redirect to~~ Serve only https://hostname
 - [x] load redirect_url from config
