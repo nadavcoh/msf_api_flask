@@ -1,5 +1,7 @@
 # msf_api_flask - WIP
 ## Instructions
+### Install dependancies
+* Redis - [Link](https://redis.io/docs/getting-started/installation/)
 ### Clone
 ```sh
 git clone https://github.com/nadavcoh/msf_api_flask.git
@@ -19,6 +21,8 @@ python3 -m venv venv
 ```sh
 pip install -r requirements.txt
 ```
+### Configure
+Rename `instance/config_example.py` to `instence/config.py` and add your app details.
 ### Initialize
 ```sh
 flask init-db
