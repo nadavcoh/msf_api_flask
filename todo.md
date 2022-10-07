@@ -13,3 +13,4 @@
     - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/
 - [ ] Vue.js https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
 - [ ] Bootstrap https://getbootstrap.com/docs/4.2/getting-started/introduction/
+- [ ] Deploy https://fly.io
