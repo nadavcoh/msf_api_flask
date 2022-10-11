@@ -5,6 +5,7 @@
 #         flask --debug run --cert=adhoc --port=2705
 
 # Python standard libraries
+from datetime import timedelta
 import os
 from time import time
 
@@ -110,7 +111,7 @@ def create_app(test_config=None):
         user = User(id_ = user_id, name = user_name, icon = user_icon, frame = user_frame)
         if not user.get(user_id):
             User.create(id_ = user_id, name = user_name, icon = user_icon, frame = user_frame)
-        login_user(user)
+        login_user(user, remember=True, duration=timedelta(days=600))
         session["token"] = token
         # g.msf_api = msf_api
 
