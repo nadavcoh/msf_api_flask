@@ -1,0 +1,2 @@
+wsl redis-server
+pause
