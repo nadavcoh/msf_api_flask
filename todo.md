@@ -14,3 +14,10 @@
 - [ ] Vue.js https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
 - [ ] Bootstrap https://getbootstrap.com/docs/4.2/getting-started/introduction/
 - [ ] Deploy https://fly.io
+- [ ] Redis
+    - https://redis.io/docs/manual/config/
+    - https://stackoverflow.com/questions/61002681/connecting-to-wsl2-server-via-local-network
+        - `netsh interface portproxy add v4tov4 listenport=6379 listenaddress=0.0.0.0 connectport=6379 connectaddress=localhost`
+        - `netsh advfirewall firewall add rule name="Allowing LAN connections" dir=in action=allow protocol=TCP localport=6379`
+- [ ] Session permanent
+    - https://stackoverflow.com/questions/11783025/is-there-an-easy-way-to-make-sessions-timeout-in-flask
