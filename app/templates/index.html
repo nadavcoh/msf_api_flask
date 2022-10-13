@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}MSF_API_FALSK{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+    <p>Gold: {{ gold_text["current"] }}/{{ gold_text["goal"] }}<br/>
+      Left: {{ gold_text["left"] }}<br/>
+      Upadated {{ gold_text["updated"] }} <a class="button" href="{{ url_for('gold') }}">Update</a></p>
+    {% endif %}
+{% endblock %}

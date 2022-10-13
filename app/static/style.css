@@ -43,7 +43,7 @@ html {
   }
   
   nav ul  {
-    display: flex;
+  /*  display: flex; */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -179,3 +179,27 @@ html {
 .reward:hover .locations {
     display: inline;
 }
+
+.portrait {
+    z-index: 1;
+    position: absolute;
+    bottom: 10px;
+    left: 7px;
+}
+
+.frame {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.icon {
+  position: relative;
+  height: 100px;
+  width: 80px;
+}
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+    }

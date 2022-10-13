@@ -10,7 +10,7 @@ import os
 from time import time
 
 # Third-party libraries
-from flask import Flask, redirect, url_for, session
+from flask import Flask, redirect, url_for, session, render_template
 from flask_login import (
     LoginManager,
     current_user,
@@ -65,25 +65,30 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
+        gold_text = {}
         if current_user.is_authenticated:
-            resp = ("<p>Hello, {}! You're logged in! AUD: {}</p>"
-                   "<div><p>Profile Picture:</p>"
-                '<img src="{}" alt="Icon"></img>'
-                '<img src="{}" alt="Frame"></img></div>'
-                '<a class="button" href="/logout">Logout</a>'.format(
-                    current_user.name, current_user.id, current_user.icon, current_user.frame)
-                #+ json.dumps(get_gear("SHARD_TASKMASTER"))
+        #     resp = ("<p>Hello, {}! You're logged in! AUD: {}</p>"
+        #            "<div><p>Profile Picture:</p>"
+        #         '<img src="{}" alt="Icon"></img>'
+        #         '<img src="{}" alt="Frame"></img></div>'
+        #         '<a class="button" href="/logout">Logout</a>'.format(
+        #             current_user.name, current_user.id, current_user.icon, current_user.frame)
+        #         #+ json.dumps(get_gear("SHARD_TASKMASTER"))
                 
-                + '<a class="button" href="/gold">Update</a>')
+                # + '<a class="button" href="/gold">Update</a>')
             gold = get_gold()
             left = gold["goal"] - gold["current_points"]
             if left < 0:
                 left = 0
-            resp += "Gold: {:,}/{:,} Left: {:,} Upadated {}".format(gold["current_points"], gold["goal"], left, naturaltime(time() - gold["updated"]))
-            
-            return ((resp))
-        else:
-            return '<a class="button" href="/login">Login</a>'
+            # gold_text = "Gold: {:,}/{:,}<br/>Left: {:,}<br/>Upadated {}".format(gold["current_points"], gold["goal"], left, naturaltime(time() - gold["updated"]))
+            gold_text["current"] = "{:,}".format(gold["current_points"])
+            gold_text["goal"] = "{:,}".format(gold["goal"])
+            gold_text["left"] = "{:,}".format(left)
+            gold_text["updated"] = "{}".format(naturaltime(time() - gold["updated"]))
+        #     return ((resp))
+        # else:
+        #     return '<a class="button" href="/login">Login</a>'
+        return render_template('index.html', gold_text=gold_text)
 
     @app.route("/login")
     def login():

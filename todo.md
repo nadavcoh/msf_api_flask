@@ -1,24 +1,27 @@
-- [ ] https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/
 - [ ] hashes
+- [ ] sort materials
+- [ ] Stream 
+    - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/
+
+- [ ] Vue.js https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
+- [ ] Bootstrap https://getbootstrap.com/docs/4.2/getting-started/introduction/
+- [ ] Deploy https://fly.io
+
+
+- [x] https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/
 - [x] SSL
-- [ ] refresh token
+- [x] refresh token
     - https://github.com/authlib/demo-oauth-client/blob/master/flask-twitter-tool/app.py
     - https://docs.authlib.org/en/latest/client/frameworks.html#auto-update-token
     - https://docs.authlib.org/en/latest/client/flask.html
     - https://stackoverflow.com/questions/66308415/what-is-the-api-contract-for-oauth2session-update-token-callback
-- [ ] sort materials
 - [x] ~~redirect to~~ Serve only https://hostname
 - [x] load redirect_url from config
-- [ ] Stream 
-    - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/
-- [ ] Vue.js https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
-- [ ] Bootstrap https://getbootstrap.com/docs/4.2/getting-started/introduction/
-- [ ] Deploy https://fly.io
-- [ ] Redis
+- [x] Redis
     - https://redis.io/docs/manual/config/
     - https://stackoverflow.com/questions/61002681/connecting-to-wsl2-server-via-local-network
         - `netsh interface portproxy add v4tov4 listenport=6379 listenaddress=0.0.0.0 connectport=6379 connectaddress=localhost`
         - `netsh advfirewall firewall add rule name="Allowing LAN connections" dir=in action=allow protocol=TCP localport=6379`
         - `hostname --all-ip-addresses`
-- [ ] Session permanent
+- [x] Session permanent
     - https://stackoverflow.com/questions/11783025/is-there-an-easy-way-to-make-sessions-timeout-in-flask

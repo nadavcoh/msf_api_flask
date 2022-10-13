@@ -143,5 +143,4 @@ dmypy.json
 .pyre/
 key.crt
 key.key
-run.sh
 *.bak
