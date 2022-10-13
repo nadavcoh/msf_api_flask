@@ -21,13 +21,13 @@ def _compliance_fixes(session):
         return url, headers, body
     session.register_compliance_hook('protected_request', _add_header)
 
-def update_token(name, token, refresh_token=None, access_token=None):
+def update_token(token, refresh_token=None, access_token=None):
     # https://docs.authlib.org/en/latest/client/frameworks.html#auto-update-token
     item = session["token"]
     # update old token
-    item.access_token = token['access_token']
-    item.refresh_token = token.get('refresh_token')
-    item.expires_at = token['expires_at']
+    item["access_token"] = token['access_token']
+    item["refresh_token"] = token.get('refresh_token')
+    item["expires_at"] = token['expires_at']
     session["token"] = item
 
 oauth.register(
