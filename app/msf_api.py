@@ -1,4 +1,4 @@
-from flask import g, current_app
+from flask import g, current_app, session
 from authlib.integrations.flask_client import OAuth
 
 # Configuration
@@ -21,6 +21,15 @@ def _compliance_fixes(session):
         return url, headers, body
     session.register_compliance_hook('protected_request', _add_header)
 
+def update_token(name, token, refresh_token=None, access_token=None):
+    # https://docs.authlib.org/en/latest/client/frameworks.html#auto-update-token
+    item = session["token"]
+    # update old token
+    item.access_token = token['access_token']
+    item.refresh_token = token.get('refresh_token')
+    item.expires_at = token['expires_at']
+    session["token"] = item
+
 oauth.register(
     'msf_api',
 #   client_id = OAUTH_CLIENT_ID,
@@ -29,6 +38,9 @@ oauth.register(
     api_base_url = API_SERVER,
 #    redirect_uri = REDIRECT_URI,
     compliance_fix=_compliance_fixes,
+    # https://github.com/authlib/demo-oauth-client/blob/master/flask-twitter-tool/app.py
+    fetch_token=lambda: session.get('token'),
+    update_token=update_token,
     client_kwargs = {'scope': 'm3p.f.pr.pro m3p.f.pr.ros m3p.f.pr.inv m3p.f.pr.act openid offline'})
 #    msf_api.headers.update({'x-api-key' : API_KEY})
 

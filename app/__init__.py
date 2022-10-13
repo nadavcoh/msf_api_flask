@@ -35,6 +35,8 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
     #app.secret_key = os.environ.get("SECRET_KEY")
+    
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=600)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -113,6 +115,7 @@ def create_app(test_config=None):
             User.create(id_ = user_id, name = user_name, icon = user_icon, frame = user_frame)
         login_user(user, remember=True, duration=timedelta(days=600))
         session["token"] = token
+        session.permanent = True
         # g.msf_api = msf_api
 
         return redirect(url_for("index"))
