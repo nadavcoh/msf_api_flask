@@ -10,7 +10,7 @@ import os
 from time import time
 
 # Third-party libraries
-from flask import Flask, redirect, url_for, session, render_template
+from flask import Flask, redirect, url_for, session, render_template, jsonify
 from flask_login import (
     LoginManager,
     current_user,
@@ -89,6 +89,15 @@ def create_app(test_config=None):
         # else:
         #     return '<a class="button" href="/login">Login</a>'
         return render_template('index.html', gold_text=gold_text)
+
+    @app.route("/debug")
+    def debug():
+        return render_template('debug.html', debug="debug")
+
+    @app.route("/debug2")
+    def debug2():
+        #session["token"]["expires_at"] = 0
+        return jsonify()
 
     @app.route("/login")
     def login():
