@@ -1,14 +1,18 @@
 <!doctype html>
+<head>
 <title>{% block title %}{% endblock %} - MSF_API_FALSK</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
 <nav>
   <h1>MSF_API_FALSK</h1>
   <ul>
     {% if current_user.is_authenticated %}
       <li><span>{{ current_user.name }}</span>
       <li><a href="{{ url_for('logout') }}">Log Out</a>
-      <li><div class="icon"><img src="{{ current_user.icon }}" alt="Icon" class="portrait"></img>
-        <img src="{{ current_user.frame }}" alt="Frame" class="frame"></img></div></li>
+      <li><div class="icon"><img src="{{ current_user.icon }}" alt="Icon" class="portrait">
+        <img src="{{ current_user.frame }}" alt="Frame" class="frame"></div></li>
     {% else %}
       <li><a href="{{ url_for('login') }}">Log In</a>
     {% endif %}
@@ -23,3 +27,5 @@
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
+</body>
+</html>

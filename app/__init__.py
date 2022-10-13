@@ -26,6 +26,7 @@ from .user import User
 from .msf_api import get_msf_api, API_SERVER
 from .gold import get_gold, update_gold
 from .farming import get_farming
+from .gear import get_gear
 
 def create_app(test_config=None):
     # create and configure the app
@@ -92,12 +93,12 @@ def create_app(test_config=None):
 
     @app.route("/debug")
     def debug():
-        return render_template('debug.html', debug="debug")
+        return render_template('debug.html', debug=get_gear("SHARD_SILVERSURFER"))
 
     @app.route("/debug2")
     def debug2():
         #session["token"]["expires_at"] = 0
-        return jsonify()
+        return jsonify(get_gear("SHARD_SILVERSURFER"))
 
     @app.route("/login")
     def login():

@@ -1,13 +1,26 @@
 html {
+box-sizing: border-box;
+}
+
+*, *:before, *:after {
+box-sizing: inherit;
+}
+
+html {
     font-family: sans-serif;
     background: #eee;
     padding: 1rem;
+	
   }
   
   body {
     max-width: 960px;
     margin: 0 auto;
     background: white;
+  }
+  
+  p {
+	  font-size: 16px;
   }
   
   h1, h2, h3, h4, h5, h6 {
