@@ -86,6 +86,7 @@ def create_app(test_config=None):
             gold_text["goal"] = "{:,}".format(gold["goal"])
             gold_text["left"] = "{:,}".format(left)
             gold_text["updated"] = "{}".format(naturaltime(time() - gold["updated"]))
+            gold_text["updated_timestamp"] = gold["updated"]
         #     return ((resp))
         # else:
         #     return '<a class="button" href="/login">Login</a>'

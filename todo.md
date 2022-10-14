@@ -25,3 +25,12 @@
         - `hostname --all-ip-addresses`
 - [x] Session permanent
     - https://stackoverflow.com/questions/11783025/is-there-an-easy-way-to-make-sessions-timeout-in-flask
+- [x] JS Update time since gold was updated
+    - https://day.js.org/docs/en/plugin/loading-into-browser
+    - https://day.js.org/docs/en/parse/unix-timestamp
+    - https://day.js.org/docs/en/display/from-now
+    - https://www.jsdelivr.com/package/npm/dayjs
+    - https://www.w3schools.com/js/js_htmldom_html.asp
+    - https://stackoverflow.com/questions/3478654/is-there-a-browser-event-for-the-window-getting-focus
+    - https://stackoverflow.com/questions/40118795/how-to-repeatedly-update-the-contents-of-a-div-by-only-using-javascript
+    - https://developer.mozilla.org/en-US/docs/Web/API/Window/focus_event

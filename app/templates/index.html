@@ -6,8 +6,17 @@
 
 {% block content %}
     {% if current_user.is_authenticated %}
+    <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1"></script>
+    <script>
+      dayjs.extend(window.dayjs_plugin_relativeTime);
+      //document.write(dayjs.unix({{ gold_text["updated_timestamp"] }}).fromNow());
+      window.addEventListener("focus", function(event) 
+      { 
+        document.getElementById("updated").innerHTML = dayjs.unix({{ gold_text["updated_timestamp"] }}).fromNow();
+      });
+    </script>
     <p>Gold: {{ gold_text["current"] }}/{{ gold_text["goal"] }}<br>
       Left: {{ gold_text["left"] }}<br>
-      Upadated {{ gold_text["updated"] }} <a class="button" href="{{ url_for('gold') }}">Update</a></p>
+      Upadated <span id="updated">{{ gold_text["updated"] }}</span> <a class="button" href="{{ url_for('gold') }}">Update</a></p>
     {% endif %}
 {% endblock %}
