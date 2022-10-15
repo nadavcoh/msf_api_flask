@@ -6,7 +6,6 @@ import sys
 from datetime import timedelta
 import redis
 
-
 # MSF API 
 import config
 client_id = config.MSF_API_CLIENT_ID
@@ -165,7 +164,8 @@ def gearset_merge(gearset1: dict, gearset2: dict):
         result = gearset_add(result, gear_id, n)
     return result
 
-def get_tier_cost_base_gear (char_name, tier, slots="111111"):
+def get_tier_cost_base_gear (char_name, tier, slots=[True]*6):
+    # Slots are listed in order, top to bottom on the left, then top to bottom on the right.
     totalCost = {}
     char_data = get_char(char_name)
     tier_data = char_data["data"]["gearTiers"][str(tier)]
