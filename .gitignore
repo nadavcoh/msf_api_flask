@@ -141,6 +141,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
 key.crt
 key.key
 *.bak
+config.py
