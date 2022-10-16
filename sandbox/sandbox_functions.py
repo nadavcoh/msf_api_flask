@@ -1,3 +1,4 @@
+from email import charset
 from requests_oauthlib import OAuth2Session
 import pandas as pd
 from time import time
@@ -25,6 +26,8 @@ scope = ['m3p.f.pr.pro' ,
 global oauth
 global redis_client
 global roster
+global inventory
+global characters
 
 # Roster
 import pandas as pd
@@ -256,3 +259,32 @@ def get_char_to_tier(char_id, tier):
     char = get_char_from_roster(char_id)
     slots_bool_not = [not x for x in char["slots"]]
     return get_multi_tier_cost_base_gear(char_id,char["tier"],tier,slots_bool_not)
+
+def get_inventory():
+    global inventory
+    r = oauth.get(api_server+"/player/v1/inventory")
+    r.json()
+    inventory=r.json()
+    return inventory
+
+def get_chars():
+    global characters
+    r = oauth.get(api_server+"/game/v1/characters", params={"charInfo":"full", 
+                                                            "status" : "playable",
+                                                            "statsFormat": "csv",
+                                                            "itemFormat": "id",
+                                                            "traitFormat": "id"})
+    characters = r.json()
+    return characters
+
+def find_in_inventory(cost: dict) -> list:
+    costInv = []
+    for currentItem in cost["data"]:
+        currentCost = [inventoryItem["quantity"] for inventoryItem in inventory["data"] if currentItem == inventoryItem["item"]]
+        if (len(currentCost) == 0):
+            currentCost = [0]
+        costInv.extend(currentCost)
+    cost_array = pd.DataFrame(list(cost["data"].items()))
+    cost_array.columns = ["Name", "Needed"]
+    cost_array.insert(2, "Inventory", costInv)
+    return cost_array
