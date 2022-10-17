@@ -7,7 +7,7 @@ import sys
 from datetime import timedelta
 import redis
 
-# MSF API 
+# MSF API v
 import config
 client_id = config.MSF_API_CLIENT_ID
 client_secret = config.MSF_API_CLIENT_SECRET
@@ -29,12 +29,9 @@ global roster
 global inventory
 global characters
 
-# Roster
-import pandas as pd
-import config
-SHEET_ID = config.MSFTOOLS_SHEETID
-SHEET_NAME = 'Roster'
 
+
+# MSF API v
 def connect_msf_api():
     global oauth
     oauth = OAuth2Session(client_id, redirect_uri=redirect_uri,
@@ -59,6 +56,7 @@ def connect_msf_api():
     print("Connected, gear_hash: %s" % current_chars_hash)
     return oauth
 
+# Redis v
 def redis_connect() -> redis.client.Redis:
     try:
         global redis_client
@@ -93,6 +91,7 @@ def set_data_to_cache(key: str, value: str) -> bool:
     state = redis_client.set(key, value=json.dumps(value))
     return state
 
+# Gear v
 def get_gear_from_api(gear_id: str) -> dict:
     """Data from api"""
 
@@ -125,6 +124,7 @@ def get_gear(gear: str) -> dict:
         state = set_data_to_cache(key="gear_"+gear, value=data)
         return data
 
+# Char
 def get_char_from_api(char_id: str) -> dict:
     """Data from api"""
     
@@ -158,6 +158,33 @@ def get_char(char_id: str) -> dict:
         state = set_data_to_cache(key="char_" + char_id, value=data)
         return data
 
+def get_chars_from_api():
+    global characters
+    r = oauth.get(api_server+"/game/v1/characters", params={"charInfo":"full", 
+                                                            "status" : "playable",
+                                                            "statsFormat": "csv",
+                                                            "itemFormat": "id",
+                                                            "traitFormat": "id"})
+    characters = r.json()
+    return characters
+
+def get_chars() -> dict:
+    # First it looks for the data in redis cache
+    data = get_data_from_cache(key="char_all")
+
+    # If cache is found then serves the data from cache
+    if data is not None:
+        return data
+
+    else:
+        # If cache is not found then sends request to the MapBox API
+        data = get_chars_from_api()
+        # This block sets saves the respose to redis and serves it directly
+        data["cache"] = False
+        state = set_data_to_cache(key="char_all", value=data)
+        return data
+
+# Gear_calc
 def gearset_add(gearset, gear_id: str, n: str):
     result = dict(gearset)
     if gear_id in result:
@@ -235,6 +262,18 @@ def get_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots=[True]*6
         state = set_data_to_cache(key=key_name, value=data)
         return data
 
+def get_char_to_tier(char_id, tier):
+    char = get_char_from_roster(char_id)
+    slots_bool_not = [not x for x in char["slots"]]
+    return get_multi_tier_cost_base_gear(char_id,char["tier"],tier,slots_bool_not)
+
+# Roster
+import pandas as pd
+import config
+SHEET_ID = config.MSFTOOLS_SHEETID
+SHEET_NAME = 'Roster'
+
+# Roster
 def get_roster():
     # https://medium.com/geekculture/2-easy-ways-to-read-google-sheets-data-using-python-9e7ef366c775
     # https://stackoverflow.com/questions/33713084/download-link-for-google-spreadsheets-csv-export-with-multiple-sheets
@@ -253,43 +292,13 @@ def get_char_from_roster(char_id):
             "tier": int(char["Tier"].values[0]),
             "slots": slots_bool}
 
-def get_char_to_tier(char_id, tier):
-    char = get_char_from_roster(char_id)
-    slots_bool_not = [not x for x in char["slots"]]
-    return get_multi_tier_cost_base_gear(char_id,char["tier"],tier,slots_bool_not)
-
+# Inventory
 def get_inventory():
     global inventory
     r = oauth.get(api_server+"/player/v1/inventory")
     r.json()
     inventory=r.json()
     return inventory
-
-def get_chars_from_api():
-    global characters
-    r = oauth.get(api_server+"/game/v1/characters", params={"charInfo":"full", 
-                                                            "status" : "playable",
-                                                            "statsFormat": "csv",
-                                                            "itemFormat": "id",
-                                                            "traitFormat": "id"})
-    characters = r.json()
-    return characters
-
-def get_chars() -> dict:
-    # First it looks for the data in redis cache
-    data = get_data_from_cache(key="char_all")
-
-    # If cache is found then serves the data from cache
-    if data is not None:
-        return data
-
-    else:
-        # If cache is not found then sends request to the MapBox API
-        data = get_chars_from_api()
-        # This block sets saves the respose to redis and serves it directly
-        data["cache"] = False
-        state = set_data_to_cache(key="char_all", value=data)
-        return data
 
 def find_in_inventory(cost: dict) -> list:
     costInv = []

@@ -33,7 +33,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        DATABASE=os.path.join(app.instance_path, 'msf_api_flask.sqlite'),
     )
     #app.secret_key = os.environ.get("SECRET_KEY")
     
@@ -98,8 +98,7 @@ def create_app(test_config=None):
 
     @app.route("/debug2")
     def debug2():
-        #session["token"]["expires_at"] = 0
-        return jsonify(get_gear("SHARD_SILVERSURFER"))
+        return jsonify("")
 
     @app.route("/login")
     def login():
