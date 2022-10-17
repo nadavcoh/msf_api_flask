@@ -158,8 +158,6 @@ def get_char(char_id: str) -> dict:
         state = set_data_to_cache(key="char_" + char_id, value=data)
         return data
 
-
-
 def gearset_add(gearset, gear_id: str, n: str):
     result = dict(gearset)
     if gear_id in result:
@@ -267,7 +265,7 @@ def get_inventory():
     inventory=r.json()
     return inventory
 
-def get_chars():
+def get_chars_from_api():
     global characters
     r = oauth.get(api_server+"/game/v1/characters", params={"charInfo":"full", 
                                                             "status" : "playable",
@@ -276,6 +274,22 @@ def get_chars():
                                                             "traitFormat": "id"})
     characters = r.json()
     return characters
+
+def get_chars() -> dict:
+    # First it looks for the data in redis cache
+    data = get_data_from_cache(key="char_all")
+
+    # If cache is found then serves the data from cache
+    if data is not None:
+        return data
+
+    else:
+        # If cache is not found then sends request to the MapBox API
+        data = get_chars_from_api()
+        # This block sets saves the respose to redis and serves it directly
+        data["cache"] = False
+        state = set_data_to_cache(key="char_all", value=data)
+        return data
 
 def find_in_inventory(cost: dict) -> list:
     costInv = []
