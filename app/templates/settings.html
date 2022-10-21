@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Settings{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="msf_tools_sheetid">msf_tools_sheetid</label>
+    <input name="msf_tools_sheetid" id="msf_tools_sheetid"
+      value="{{ request.form['msf_tools_sheetid'] or msf_tools_sheetid }}">
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+{% endblock %}

@@ -1,3 +1,5 @@
+- [ ] Last update time for inventory and roster
+
 - [ ] hashes
 - [ ] sort materials
 - [ ] Stream 
@@ -6,6 +8,9 @@
 - [ ] Vue.js https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/
 - [ ] Bootstrap https://getbootstrap.com/docs/4.2/getting-started/introduction/
 - [ ] Deploy https://fly.io
+- [ ] SQLAlechemy
+    - https://docs.sqlalchemy.org/en/14/tutorial/index.html
+    - https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/
 
 
 - [x] https://flask.palletsprojects.com/en/2.2.x/tutorial/templates/

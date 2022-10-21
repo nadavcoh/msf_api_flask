@@ -10,7 +10,7 @@ import os
 from time import time
 
 # Third-party libraries
-from flask import Flask, redirect, url_for, session, render_template, jsonify
+from flask import Flask, redirect, url_for, session, render_template, jsonify, request, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -19,6 +19,10 @@ from flask_login import (
     logout_user,
 )
 from humanize import naturaltime
+
+from app.inventory import find_item_in_inventory
+from app.roster import update_roster
+from app.settings import get_msftools_sheetid, set_msftools_sheetid
 
 # Internal imports
 # from app.db import init_db_command
@@ -98,7 +102,8 @@ def create_app(test_config=None):
 
     @app.route("/debug2")
     def debug2():
-        return jsonify("")
+        update_roster()
+        return jsonify(find_item_in_inventory("f"))
 
     @app.route("/login")
     def login():
@@ -152,6 +157,18 @@ def create_app(test_config=None):
     @login_required
     def farming():
         return (get_farming())
+
+    @app.route('/settings', methods=('GET', 'POST'))
+    @login_required
+    def settings():
+        msf_tools_sheetid = get_msftools_sheetid()
+
+        if request.method == 'POST':
+            msf_tools_sheetid = request.form['msf_tools_sheetid']
+            set_msftools_sheetid(msf_tools_sheetid)
+            flash("Saved")
+
+        return render_template('settings.html', msf_tools_sheetid=msf_tools_sheetid)
 
     from . import db
     db.init_app(app)

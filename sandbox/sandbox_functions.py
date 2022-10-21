@@ -279,8 +279,15 @@ def get_roster():
     # https://stackoverflow.com/questions/33713084/download-link-for-google-spreadsheets-csv-export-with-multiple-sheets
     global roster
     url = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}'
-    df = pd.read_csv(url)
-    roster = df[['ID','Tier','TopLeft', 'MidLeft', 'BottomLeft', 'TopRight', 'MidRight', 'BottomRight']]
+    roster = pd.read_csv(url)
+    roster.drop(columns = ['StarkHealth', 'StarkDamage','StarkArmor','StarkFocus', 'StarkResist', 'SaveTime', 'Power', 'Yellow', 'Red', 'Level', 'Basic', 'Special', 'Ultimate', 'Passive', 'IsoClass', 'IsoPips', 'Fragments', 'UnclaimedRed'], inplace=True)
+    # roster = df[['ID','Tier','TopLeft', 'MidLeft', 'BottomLeft', 'TopRight', 'MidRight', 'BottomRight']]
+    roster.fillna(0, inplace=True)
+    roster["Tier"] = pd.to_numeric(roster["Tier"], downcast="integer")
+    slots_y_n = roster[['TopLeft', 'MidLeft', 'BottomLeft', 'TopRight', 'MidRight', 'BottomRight']].values.tolist()   
+    slots_bool = [[x=="Y" for x in k] for k in slots_y_n]
+    roster.insert(2,"slots",slots_bool)
+    roster.drop(columns=['TopLeft', 'MidLeft', 'BottomLeft', 'TopRight', 'MidRight', 'BottomRight'], inplace=True)
     return (roster)
 
 def get_char_from_roster(char_id):

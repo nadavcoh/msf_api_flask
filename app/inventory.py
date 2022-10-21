@@ -39,3 +39,15 @@ def update_inventory():
         WHERE id = ?;""",
         (json.dumps(inventory["meta"]), current_user.id))
         db.commit()
+
+def find_item_in_inventory (item):
+    db = get_db()
+    resp = db.execute("""SELECT quantity 
+                        FROM Inventory  
+                        WHERE "user_id" = ? AND item = ?;
+                        """, (current_user.id, item)).fetchone()
+    if resp:
+        resp = resp[0]
+    else:
+        resp = 0
+    return resp

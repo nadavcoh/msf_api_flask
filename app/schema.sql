@@ -1,13 +1,15 @@
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Inventory;
+DROP TABLE IF EXISTS Roster;
 
-CREATE TABLE user (
+CREATE TABLE User (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   icon TEXT NOT NULL,
   frame TEXT NOT NULL,
   gold TEXT,
-  inventory TEXT
+  inventory TEXT,
+  msf_tools_sheetid TEXT
 );
 
 -- https://www.w3schools.com/sql/sql_primarykey.asp
@@ -19,4 +21,13 @@ CREATE TABLE Inventory (
   quantity INT NOT NULL,
   FOREIGN KEY(user_id) REFERENCES user(id),
   CONSTRAINT PK_Inventory PRIMARY KEY (user_id, item)
+);
+
+CREATE TABLE Roster (
+  user_id TEXT NOT NULL,
+  char_id TEXT NOT NULL,
+  tier TEXT NOT NULL,
+  slots TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES user(id),
+  CONSTRAINT PK_Inventory PRIMARY KEY (user_id, char_id)
 );
