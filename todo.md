@@ -1,7 +1,8 @@
 - [ ] Last update time for inventory and roster
+- [ ] Cache farming
 
 - [ ] hashes
-- [ ] sort materials
+- [x] sort materials
 - [ ] Stream 
     - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/
 

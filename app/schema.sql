@@ -26,8 +26,10 @@ CREATE TABLE Inventory (
 CREATE TABLE Roster (
   user_id TEXT NOT NULL,
   char_id TEXT NOT NULL,
-  tier TEXT NOT NULL,
+  tier INT NOT NULL,
   slots TEXT NOT NULL,
+  save_time DOUBLE NOT NULL,
+  yellow INT NOT NULL,
   FOREIGN KEY(user_id) REFERENCES user(id),
   CONSTRAINT PK_Inventory PRIMARY KEY (user_id, char_id)
 );

@@ -10,7 +10,7 @@ import os
 from time import time
 
 # Third-party libraries
-from flask import Flask, redirect, url_for, session, render_template, jsonify, request, flash
+from flask import Flask, redirect, url_for, session, render_template, jsonify, request, flash, Markup
 from flask_login import (
     LoginManager,
     current_user,
@@ -20,8 +20,8 @@ from flask_login import (
 )
 from humanize import naturaltime
 
-from app.inventory import find_item_in_inventory
-from app.roster import update_roster
+from app.inventory import find_item_in_inventory, update_inventory
+from app.roster import find_char_in_roster, update_roster
 from app.settings import get_msftools_sheetid, set_msftools_sheetid
 
 # Internal imports
@@ -29,7 +29,7 @@ from app.settings import get_msftools_sheetid, set_msftools_sheetid
 from .user import User
 from .msf_api import get_msf_api, API_SERVER
 from .gold import get_gold, update_gold
-from .farming import get_farming
+from .farming import get_farming, get_farming_table_html, get_farming_table_html2
 from .gear import get_gear
 
 def create_app(test_config=None):
@@ -102,8 +102,9 @@ def create_app(test_config=None):
 
     @app.route("/debug2")
     def debug2():
+        update_inventory()
         update_roster()
-        return jsonify(find_item_in_inventory("f"))
+        return jsonify(find_char_in_roster("AimControl_Infect"))
 
     @app.route("/login")
     def login():
@@ -157,6 +158,16 @@ def create_app(test_config=None):
     @login_required
     def farming():
         return (get_farming())
+
+    @app.route("/farming2")
+    @login_required
+    def farming2():
+        return render_template('farming.html', content=Markup(get_farming_table_html()))
+
+    @app.route("/farming3")
+    @login_required
+    def farming3():
+        return render_template('farming.html', content=Markup(get_farming_table_html2()))
 
     @app.route('/settings', methods=('GET', 'POST'))
     @login_required
