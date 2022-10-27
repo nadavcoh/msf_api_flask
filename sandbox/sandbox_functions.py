@@ -267,7 +267,7 @@ def get_char_to_tier(char_id, tier):
     slots_bool_not = [not x for x in char["slots"]]
     return get_multi_tier_cost_base_gear(char_id,char["tier"],tier,slots_bool_not)
 
-# Roster
+# Roster v
 import pandas as pd
 import config
 SHEET_ID = config.MSFTOOLS_SHEETID
@@ -299,7 +299,7 @@ def get_char_from_roster(char_id):
             "tier": int(char["Tier"].values[0]),
             "slots": slots_bool}
 
-# Inventory
+# Inventory v
 def get_inventory():
     global inventory
     r = oauth.get(api_server+"/player/v1/inventory")
