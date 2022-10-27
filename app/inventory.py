@@ -1,3 +1,4 @@
+from time import time
 from flask_login import current_user
 from app.msf_api import get_msf_api
 from app.db import get_db
@@ -19,7 +20,8 @@ def update_inventory():
         "SELECT inventory FROM user WHERE id = ?", (current_user.id,)
     ).fetchone()
     if resp[0]:
-        asOf = json.loads(resp[0])["asOf"]
+        meta = json.loads(resp[0])
+        asOf = meta["asOf"]
     else:
         asOf = resp[0]
     inventory = get_inventory_from_api(asOf)
@@ -33,11 +35,20 @@ def update_inventory():
                     "(user_id, item, quantity)"
                     "VALUES (:user_id, :item, :quantity)",
                     [k|{"user_id": current_user.id} for k in inventory["data"]])
+        inventory["meta"]["updated"] = time()
         db.execute(
         """UPDATE user
         SET inventory = ?
         WHERE id = ?;""",
         (json.dumps(inventory["meta"]), current_user.id))
+        db.commit()
+    else:
+        meta["updated"] = time()
+        db.execute(
+        """UPDATE user
+        SET inventory = ?
+        WHERE id = ?;""",
+        (json.dumps(meta), current_user.id))
         db.commit()
 
 def find_item_in_inventory (item):
@@ -50,4 +61,15 @@ def find_item_in_inventory (item):
         resp = resp[0]
     else:
         resp = 0
+    return resp
+
+def get_inventory_update_time():
+    db = get_db()
+    resp = db.execute(
+        "SELECT inventory FROM user WHERE id = ?", (current_user.id,)
+    ).fetchone()
+    if resp[0]:
+        resp = json.loads(resp[0]).get("updated")
+    else:
+        resp = resp[0]
     return resp

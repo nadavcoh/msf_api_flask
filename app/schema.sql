@@ -9,7 +9,7 @@ CREATE TABLE User (
   frame TEXT NOT NULL,
   gold TEXT,
   inventory TEXT,
-  msf_tools_sheetid TEXT
+  roster TEXT
 );
 
 -- https://www.w3schools.com/sql/sql_primarykey.asp
@@ -28,7 +28,6 @@ CREATE TABLE Roster (
   char_id TEXT NOT NULL,
   tier INT NOT NULL,
   slots TEXT NOT NULL,
-  save_time DOUBLE NOT NULL,
   yellow INT NOT NULL,
   FOREIGN KEY(user_id) REFERENCES user(id),
   CONSTRAINT PK_Inventory PRIMARY KEY (user_id, char_id)

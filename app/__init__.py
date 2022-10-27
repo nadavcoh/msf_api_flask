@@ -20,8 +20,8 @@ from flask_login import (
 )
 from humanize import naturaltime
 
-from app.inventory import find_item_in_inventory, update_inventory
-from app.roster import find_char_in_roster, update_roster
+from app.inventory import find_item_in_inventory, get_inventory_update_time, update_inventory
+from app.roster import find_char_in_roster, get_roster_update_time, update_roster
 from app.settings import get_msftools_sheetid, set_msftools_sheetid
 
 # Internal imports
@@ -71,30 +71,22 @@ def create_app(test_config=None):
     @app.route("/")
     def index():
         gold_text = {}
+        updated = {}
         if current_user.is_authenticated:
-        #     resp = ("<p>Hello, {}! You're logged in! AUD: {}</p>"
-        #            "<div><p>Profile Picture:</p>"
-        #         '<img src="{}" alt="Icon"></img>'
-        #         '<img src="{}" alt="Frame"></img></div>'
-        #         '<a class="button" href="/logout">Logout</a>'.format(
-        #             current_user.name, current_user.id, current_user.icon, current_user.frame)
-        #         #+ json.dumps(get_gear("SHARD_TASKMASTER"))
-                
-                # + '<a class="button" href="/gold">Update</a>')
             gold = get_gold()
             left = gold["goal"] - gold["current_points"]
             if left < 0:
                 left = 0
-            # gold_text = "Gold: {:,}/{:,}<br/>Left: {:,}<br/>Upadated {}".format(gold["current_points"], gold["goal"], left, naturaltime(time() - gold["updated"]))
             gold_text["current"] = "{:,}".format(gold["current_points"])
             gold_text["goal"] = "{:,}".format(gold["goal"])
             gold_text["left"] = "{:,}".format(left)
             gold_text["updated"] = "{}".format(naturaltime(time() - gold["updated"]))
             gold_text["updated_timestamp"] = gold["updated"]
-        #     return ((resp))
-        # else:
-        #     return '<a class="button" href="/login">Login</a>'
 
+            updated["inventory"] = get_inventory_update_time()
+            updated["roster"] = get_roster_update_time()
+
+        # Sitemap
         # https://stackoverflow.com/questions/13151161/display-links-to-new-webpages-created/13161594#13161594
         # https://stackoverflow.com/questions/13317536/get-list-of-all-routes-defined-in-the-flask-app
         def has_no_empty_params(rule):
@@ -109,11 +101,8 @@ def create_app(test_config=None):
                 url = url_for(rule.endpoint, **(rule.defaults or {}))
                 links.append((url, rule.endpoint))
         # links is now a list of url, endpoint tuples
-
-
-
-        
-        return render_template('index.html', gold_text=gold_text, links=links)
+      
+        return render_template('index.html', gold_text=gold_text, links=links, updated = updated, time=time, naturaltime=naturaltime)
 
     @app.route("/debug")
     def debug():
@@ -167,10 +156,22 @@ def create_app(test_config=None):
         logout_user()
         return redirect(url_for("index"))
 
-    @app.route("/gold")
+    @app.route("/update/gold")
     @login_required
-    def gold():
+    def update_gold_route():
         update_gold()
+        return redirect(url_for("index"))
+    
+    @app.route("/update/inventory")
+    @login_required
+    def update_inventory_route():
+        update_inventory()
+        return redirect(url_for("index"))
+
+    @app.route("/update/roster")
+    @login_required
+    def update_roster_route():
+        update_roster()
         return redirect(url_for("index"))
 
     @app.route("/farming")

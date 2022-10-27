@@ -12,12 +12,16 @@
       //document.write(dayjs.unix({{ gold_text["updated_timestamp"] }}).fromNow());
       window.addEventListener("focus", function(event) 
       { 
-        document.getElementById("updated").innerHTML = dayjs.unix({{ gold_text["updated_timestamp"] }}).fromNow();
+        document.getElementById("gold_updated").innerHTML = dayjs.unix({{ gold_text["updated_timestamp"] }}).fromNow();
+        {% if updated["inventory"] %} document.getElementById("inventory_updated").innerHTML = dayjs.unix({{ updated["inventory"] }}).fromNow(); {% endif %}
+        {% if updated["roster"] %} document.getElementById("roster_updated").innerHTML = dayjs.unix({{ updated["roster"] }}).fromNow(); {% endif %}
       });
     </script>
     <p>Gold: {{ gold_text["current"] }}/{{ gold_text["goal"] }}<br>
       Left: {{ gold_text["left"] }}<br>
-      Upadated <span id="updated">{{ gold_text["updated"] }}</span> <a class="button" href="{{ url_for('gold') }}">Update</a></p>
+      Upadated <span id="gold_updated">{{ gold_text["updated"] }}</span> <a class="button" href="{{ url_for('update_gold_route') }}">Update</a></p>
+    <p>Inventory updated <span id="inventory_updated">{{"{}".format(naturaltime(time() - updated["inventory"])) if updated["inventory"] else "Never"}}</span> <a class="button" href="{{ url_for('update_inventory_route') }}">Update</a></p>
+    <p>Roster updated <span id="roster_updated">{{ "{}".format(naturaltime(time() - updated["roster"])) if updated["roster"] else "Never"}}</span> <a class="button" href="{{ url_for('update_roster_route') }}">Update</a></p>
     <p><a href="{{ url_for('settings') }}">Settings</a></p>
     <ul>
       {% for url, endpoint in links %}
