@@ -94,7 +94,26 @@ def create_app(test_config=None):
         #     return ((resp))
         # else:
         #     return '<a class="button" href="/login">Login</a>'
-        return render_template('index.html', gold_text=gold_text)
+
+        # https://stackoverflow.com/questions/13151161/display-links-to-new-webpages-created/13161594#13161594
+        # https://stackoverflow.com/questions/13317536/get-list-of-all-routes-defined-in-the-flask-app
+        def has_no_empty_params(rule):
+            defaults = rule.defaults if rule.defaults is not None else ()
+            arguments = rule.arguments if rule.arguments is not None else ()
+            return len(defaults) >= len(arguments)
+        links = []
+        for rule in app.url_map.iter_rules():
+            # Filter out rules we can't navigate to in a browser
+            # and rules that require parameters
+            if "GET" in rule.methods and has_no_empty_params(rule):
+                url = url_for(rule.endpoint, **(rule.defaults or {}))
+                links.append((url, rule.endpoint))
+        # links is now a list of url, endpoint tuples
+
+
+
+        
+        return render_template('index.html', gold_text=gold_text, links=links)
 
     @app.route("/debug")
     def debug():
