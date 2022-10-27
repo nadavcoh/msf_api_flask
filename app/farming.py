@@ -101,7 +101,7 @@ def get_farming_locations(row):
     result = "<div class='reward'><ul class='locations'>"
     for location in row["locations"]:
         campaign_data = get_campaign (location["campaign_id"])
-        result += "<li class='location'>{} {} {}-{}</li>".format(campaign_data["data"]["name"], campaign_data["data"].get("subName", ""), location["chapter"], location["tier"])
+        result += "<li class='location'>{} {}-{}</li>".format(campaign_data["data"]["name"], location["chapter"], location["tier"])
     result += "</ul></div>"
     return result
 
@@ -133,7 +133,6 @@ def get_farming_table_html_char_shards():
     farming = farming.loc[(farming["yellow"]!=7) & (farming["explode1"]=="SHARD")]
     farming = farming.loc[(farming["yellow"]!=6) | (farming["inventory"]<300)]
     farming = farming.loc[(farming["yellow"]!=5) | (farming["inventory"]<500)]
-    farming = farming.loc[(farming["yellow"]!=4) | (farming["inventory"]<630)]
     farming.drop(columns = ["id", "characterId", "explode1", "explode2", "tier"], inplace=True)
     return farming.style.format(thousands=",",
                                 formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
