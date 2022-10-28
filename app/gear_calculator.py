@@ -64,7 +64,7 @@ def team(id):
     
     result.fillna(0, inplace=True)
     result.drop(index=result.loc[result["gear_id"]=="SC"].index, inplace=True)
-    result["need"] = result.sum(axis="columns")
+    result["need"] = result.sum(axis="columns", numeric_only=True)
     def get_inventory_data (row):
         return find_item_in_inventory(row["gear_id"])
     result["have"] = result.apply(get_inventory_data, axis=1)
