@@ -57,7 +57,7 @@ def calculate_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots=[T
     current_tier = get_tier_cost_base_gear(char_name, from_tier, slots)
     if to_tier>from_tier:
         totalCost = gearset_merge(totalCost, current_tier["data"])
-    for tier in range(from_tier+1,to_tier-1):
+    for tier in range(from_tier+1,to_tier):
         current_tier = get_tier_cost_base_gear(char_name, tier)
         totalCost = gearset_merge(totalCost, current_tier["data"])
     return {"data": totalCost, "meta": current_tier["meta"]}
