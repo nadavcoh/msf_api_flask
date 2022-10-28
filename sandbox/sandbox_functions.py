@@ -124,7 +124,7 @@ def get_gear(gear: str) -> dict:
         state = set_data_to_cache(key="gear_"+gear, value=data)
         return data
 
-# Char
+# Char v
 def get_char_from_api(char_id: str) -> dict:
     """Data from api"""
     
@@ -273,7 +273,7 @@ import config
 SHEET_ID = config.MSFTOOLS_SHEETID
 SHEET_NAME = 'Roster'
 
-# Roster
+# Roster v
 def get_roster():
     # https://medium.com/geekculture/2-easy-ways-to-read-google-sheets-data-using-python-9e7ef366c775
     # https://stackoverflow.com/questions/33713084/download-link-for-google-spreadsheets-csv-export-with-multiple-sheets

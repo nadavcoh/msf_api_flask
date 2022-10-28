@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS User;
 DROP TABLE IF EXISTS Inventory;
 DROP TABLE IF EXISTS Roster;
+DROP TABLE IF EXISTS Teams;
 
 CREATE TABLE User (
   id TEXT PRIMARY KEY,
@@ -30,5 +31,17 @@ CREATE TABLE Roster (
   slots TEXT NOT NULL,
   yellow INT NOT NULL,
   FOREIGN KEY(user_id) REFERENCES user(id),
-  CONSTRAINT PK_Inventory PRIMARY KEY (user_id, char_id)
+  CONSTRAINT PK_Roster PRIMARY KEY (user_id, char_id)
+);
+
+CREATE TABLE Teams (
+  user_id TEXT NOT NULL,
+  team_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  char1 TEXT,
+  char2 TEXT,
+  char3 TEXT,
+  char4 TEXT,
+  char5 TEXT,
+  to_tier INT,
+  FOREIGN KEY(user_id) REFERENCES user(id)
 );

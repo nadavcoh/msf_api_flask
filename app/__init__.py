@@ -31,6 +31,7 @@ from .msf_api import get_msf_api, API_SERVER
 from .gold import get_gold, update_gold
 from .farming import get_farming, get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc
 from .gear import get_gear
+from .gear_calculator import gear_calculator
 
 def create_app(test_config=None):
     # create and configure the app
@@ -220,6 +221,8 @@ def create_app(test_config=None):
             flash("Saved")
 
         return render_template('settings.html', msf_tools_sheetid=msf_tools_sheetid)
+
+    app.register_blueprint(gear_calculator)
 
     from . import db
     db.init_app(app)

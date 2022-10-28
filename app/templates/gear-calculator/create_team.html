@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Create Team{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="to_tier">To tier:</label>
+    <input name="to_tier" id="to_tier" value="15">
+      {% for char in chars %}
+        <input type="checkbox" id="{{ char["id"] }}" name="{{ char["id"] }}" value="{{ char["id"] }}">
+        <label for="{{ char["id"] }}"><img src="{{ char["portrait"] }}"> {{ char["name"] }}</label><br>
+    {% endfor %}
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
