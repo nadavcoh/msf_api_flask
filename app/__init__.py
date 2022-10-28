@@ -106,10 +106,12 @@ def create_app(test_config=None):
         return render_template('index.html', gold_text=gold_text, links=links, updated = updated, time=time, naturaltime=naturaltime)
 
     @app.route("/debug")
+    @login_required
     def debug():
         return render_template('debug.html', debug=get_gear("SHARD_SILVERSURFER"))
 
     @app.route("/debug2")
+    @login_required
     def debug2():
         update_inventory()
         update_roster()

@@ -184,7 +184,7 @@ def get_chars() -> dict:
         state = set_data_to_cache(key="char_all", value=data)
         return data
 
-# Gear_calc
+# Gear_calc v
 def gearset_add(gearset, gear_id: str, n: str):
     result = dict(gearset)
     if gear_id in result:

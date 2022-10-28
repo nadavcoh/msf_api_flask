@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Gear Calculator{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <article class="post">
+      <header>
+        <div>
+          <h1><a href="{{ url_for("gear_calculator.team", id=team['team_id'])}}">{{ team['name'] }}</a></h1>
+          <div class="about">{{ team['to_tier'] }}</div>
+        </div>
+          <a class="action" href="">Edit</a>
+      </header>
+      <ul class="team">
+        {% for char in [team['char1'], team['char2'], team['char3'], team['char4'], team['char5']] %}
+        <li>{{ char }}</li>
+        {% endfor %}
+        </ul>
+      {{ df_html }}
+    </article>
+{% endblock %}

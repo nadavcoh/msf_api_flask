@@ -6,6 +6,8 @@
 
 {% block content %}
   <form method="post">
+    <label for="name">Name:</label>
+    <input name="name" id="name" value="Team">
     <label for="to_tier">To tier:</label>
     <input name="to_tier" id="to_tier" value="15">
       {% for char in chars %}

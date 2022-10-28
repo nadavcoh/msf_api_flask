@@ -37,6 +37,7 @@ CREATE TABLE Roster (
 CREATE TABLE Teams (
   user_id TEXT NOT NULL,
   team_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
   char1 TEXT,
   char2 TEXT,
   char3 TEXT,

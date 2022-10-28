@@ -5,7 +5,7 @@ def get_char_from_api(char_id: str) -> dict:
     msf_api = get_msf_api()
     endpoint = "/game/v1/characters/" + char_id
     params = {"statsFormat": "csv",
-            "charInfo": "none",
+            "charInfo": "full",
             "costumes": "none",
             "abilityKits": "none",
             "pieceFlatCost": "full",
