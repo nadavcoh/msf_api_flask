@@ -220,3 +220,7 @@ img {
 /*.col1 {
   display: none;
 } */
+.tiny {
+  
+  width: 30px;
+}

@@ -1,3 +1,4 @@
+import re
 from flask import (
     Blueprint, flash, g, jsonify, redirect, render_template, request, session, url_for, Markup
 )
@@ -8,7 +9,7 @@ from app.gear import get_gear
 from app.inventory import find_item_in_inventory
 from .char import get_char, get_chars
 from .db import get_db
-from .gear_calculator_functions import get_char_to_tier
+from .gear_calculator_functions import gearset_merge, get_char_to_tier
 
 gear_calculator = Blueprint('gear_calculator', __name__, url_prefix='/gear-calculator')
 
@@ -102,7 +103,6 @@ def team(id):
             char_data = get_char(char_name)
             x = "<img src='{}'>".format(char_data["data"]["portrait"])
             x += char_data["data"]["name"]
-
         else:
             match x:
                 case "name":
@@ -135,3 +135,79 @@ def delete_team(id):
     db.execute('DELETE FROM Teams WHERE team_id = ? and "user_id" = ?', (id, current_user.id))
     db.commit()
     return redirect(url_for('gear_calculator.index'))
+
+@gear_calculator.route('/all-teams')
+@login_required
+def all_teams():
+    db = get_db()
+    teams = db.execute(
+        """SELECT team_id, char1, char2, char3, char4, char5, to_tier, name
+        FROM Teams
+        WHERE "user_id" = ?""", (current_user.id,)
+    ).fetchall()
+    result = pd.DataFrame(columns=["gear_id"], dtype = str)
+    for team in teams:
+        team_gearset = {}
+        for char_num in range(1,6):
+            char_gearset = get_char_to_tier(team["char"+str(char_num)], team["to_tier"])
+            team_gearset = gearset_merge(team_gearset, char_gearset["data"])
+        team_df = pd.DataFrame(data={"gear_id": team_gearset.keys(), "team"+str(team["team_id"]): team_gearset.values()} )
+        team_df = team_df.astype({'gear_id':str})
+        result = pd.merge(result, team_df, how="outer")
+    
+    result.fillna(0, inplace=True)
+    result.drop(index=result.loc[result["gear_id"]=="SC"].index, inplace=True)
+    result["need"] = result.sum(axis="columns", numeric_only=True)
+    def get_inventory_data (row):
+        return find_item_in_inventory(row["gear_id"])
+    result["have"] = result.apply(get_inventory_data, axis=1)
+    result["remaining"] = result["need"] - result["have"]
+    result["remaining"] = [0 if x<0 else x for x in result["remaining"]]
+    def get_gear_data (row):
+        gear_data = get_gear(row["gear_id"])
+        return {"gear_id": row["gear_id"],
+                "name": gear_data["data"]["name"],
+                "icon": gear_data["data"]["icon"],
+                "tier": gear_data["data"].get("tier") ,
+                }
+    gear_data = result.apply (get_gear_data, result_type ='expand', axis = 1)
+    result = pd.merge(result, gear_data)
+    result.sort_values(["remaining", "tier", "name"], ascending=[False, False, True], inplace=True)
+    result.drop(columns = ["gear_id", "tier"], inplace=True)
+    # https://stackoverflow.com/questions/52475458/how-to-sort-pandas-dataframe-with-a-key
+    rule = {
+    "name": 1,
+    "icon": 2,
+    "need": 5,
+    "have": 4,
+    "remaining": 3
+    }
+    result.sort_index(axis="columns", inplace = True, key=lambda x: pd.Series(x).apply(lambda y: rule.get(y, 1000)))
+    # https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Other-Fun-and-Useful-Stuff
+    def make_index(x):
+        if x.startswith("team"):
+            team_id = int(re.match(r'team(.*)', x).group(1))
+            team_row = [team for team in teams if team["team_id"] == team_id][0]
+            x = team_row["name"]
+            for char_num in range(1,6):
+                char_name = team_row["char"+str(char_num)]
+                char_data = get_char(char_name)
+                x += "<br><img class='tiny' src='{}'>".format(char_data["data"]["portrait"])
+                # x += char_data["data"]["name"]
+        else:
+            x = x.capitalize()
+        return x
+    teams_list = ["team"+str(team["team_id"]) for team in teams]
+    teams_formatter = {team_name: "{:,.0f}" for team_name in teams_list}
+    def make_pretty(styler):
+        styler.highlight_min(subset="remaining", color="palegreen")
+        styler.highlight_between(subset="remaining", left=1)
+        styler.format_index(formatter=make_index, axis="columns")
+        styler.format(thousands=",",
+                                formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
+                                          'need': "{:,.0f}",
+                                          'remaining': "{:,.0f}"
+                                           }|teams_formatter )
+        return styler
+    df_html = result.style.pipe(make_pretty).to_html()
+    return render_template('gear-calculator/all_teams.html', df_html=Markup(df_html))
