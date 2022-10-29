@@ -9,7 +9,7 @@
     <label for="name">Name:</label>
     <input name="name" id="name" value="Team">
     <label for="to_tier">To tier:</label>
-    <input name="to_tier" id="to_tier" value="15">
+    <input name="to_tier" id="to_tier" value="16">
       {% for char in chars %}
         <input type="checkbox" id="{{ char["id"] }}" name="{{ char["id"] }}" value="{{ char["id"] }}">
         <label for="{{ char["id"] }}"><img src="{{ char["portrait"] }}"> {{ char["name"] }}</label><br>

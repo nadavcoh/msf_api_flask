@@ -85,14 +85,14 @@ def team(id):
     rule = {
     "name": 1,
     "icon": 2,
-    "char1": 3,
-    "char2": 4,
-    "char3": 5,
-    "char4": 6,
-    "char5": 7,
-    "need": 8,
-    "have": 9,
-    "remaining": 10
+    "char1": 11,
+    "char2": 12,
+    "char3": 13,
+    "char4": 14,
+    "char5": 15,
+    "need": 5,
+    "have": 4,
+    "remaining": 3
     }
     result.sort_index(axis="columns", inplace = True, key=lambda x: pd.Series(x).apply(lambda y: rule.get(y, 1000)))
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Other-Fun-and-Useful-Stuff
@@ -127,3 +127,11 @@ def team(id):
         return styler
     df_html = result.style.pipe(make_pretty).to_html()
     return render_template('gear-calculator/team.html', team=team, df_html=Markup(df_html))
+
+@gear_calculator.route('/team/<int:id>/delete')
+@login_required
+def delete_team(id):
+    db = get_db()
+    db.execute('DELETE FROM Teams WHERE team_id = ? and "user_id" = ?', (id, current_user.id))
+    db.commit()
+    return redirect(url_for('gear_calculator.index'))

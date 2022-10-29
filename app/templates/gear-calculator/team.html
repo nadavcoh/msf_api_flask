@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Gear Calculator{% endblock %}</h1>
+  <h1><a href="{{ url_for("gear_calculator.index")}}">{% block title %}Gear Calculator{% endblock %}</a></h1>
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
           <h1><a href="{{ url_for("gear_calculator.team", id=team['team_id'])}}">{{ team['name'] }}</a></h1>
           <div class="about">{{ team['to_tier'] }}</div>
         </div>
-          <a class="action" href="">Edit</a>
+        <a class="action" href="{{ url_for("gear_calculator.delete_team", id=team['team_id'])}}">Delete</a>
       </header>
       <ul class="team">
         {% for char in [team['char1'], team['char2'], team['char3'], team['char4'], team['char5']] %}
