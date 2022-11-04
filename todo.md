@@ -1,7 +1,17 @@
-- [ ] Last update time for inventory and roster
-- [ ] Cache farming
-
+- [ ] Crafted gear
+- [x] Last update time for inventory and roster
+- [x] Cache farming
+- [ ] JS Tables
+    - https://m2.material.io/components/data-tables/web#using-data-tables
+    - https://mui.com/material-ui/getting-started/learn/
+    - https://mui.com/x/react-data-grid/migration-v4/
+    - https://listjs.com/docs/
+- [ ] Config
+    - https://flask.palletsprojects.com/en/0.12.x/config/#builtin-configuration-values
+    - https://docs.authlib.org/en/latest/client/flask.html#configuration
 - [ ] hashes
+    - https://viniciuschiele.github.io/flask-apscheduler/index.html
+    - https://apscheduler.readthedocs.io/en/stable/userguide.html#scheduler-events
 - [x] sort materials
 - [ ] Stream 
     - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/
