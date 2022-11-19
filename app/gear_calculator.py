@@ -134,7 +134,7 @@ def team(id):
         if x.startswith("char"):
             char_name = team[x]
             char_data = get_char(char_name)
-            x = "<img src='{}'>".format(char_data["data"]["portrait"])
+            x = "<img class='mid' src='{}'><br>".format(char_data["data"]["portrait"])
             x += char_data["data"]["name"]
         else:
             match x:
@@ -278,7 +278,6 @@ def all_teams():
     result["remaining_adjusted"] = result["remaining"] - result["from_crafted"]
     result["remaining_adjusted"] = [0 if x<0 else x for x in result["remaining_adjusted"]]
 
-
     def get_gear_data (row):
         gear_data = get_gear(row["gear_id"])
         return {"gear_id": row["gear_id"],
@@ -288,7 +287,7 @@ def all_teams():
                 }
     gear_data = result.apply (get_gear_data, result_type ='expand', axis = 1)
     result = pd.merge(result, gear_data)
-    result.sort_values(["remaining", "tier", "name"], ascending=[False, False, True], inplace=True)
+    result.sort_values(["remaining_adjusted", "tier", "name"], ascending=[False, False, True], inplace=True)
     result.drop(columns = ["gear_id", "tier"], inplace=True)
     # https://stackoverflow.com/questions/52475458/how-to-sort-pandas-dataframe-with-a-key
     rule = {
@@ -361,7 +360,7 @@ def all_teams():
                                 formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
                                           'need': "{:,.0f}",
                                           'amount': "{:,.0f}"
-                                           } )
+                                           } |teams_formatter)
         return styler
     crafted_html = crafted.style.pipe(make_pretty2).to_html()
 

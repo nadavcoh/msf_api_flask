@@ -198,12 +198,16 @@ html {
     position: absolute;
     bottom: 10px;
     left: 7px;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 .frame {
   position: absolute;
   left: 0;
   bottom: 0;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .icon {
@@ -211,16 +215,11 @@ html {
   height: 100px;
   width: 80px;
 }
-
-img {
-    max-height: 100%;
-    max-width: 100%;
-    }
-
-/*.col1 {
-  display: none;
-} */
 .tiny {
   
   width: 30px;
+}
+
+.mid {
+  width: 70px;
 }
