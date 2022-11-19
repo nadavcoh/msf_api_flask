@@ -1,4 +1,7 @@
 - [ ] Crafted gear
+- [ ] Delete team
+- [ ] Show team gear
+- [ ] Links between gear pages
 - [x] Last update time for inventory and roster
 - [x] Cache farming
 - [ ] JS Tables
@@ -12,6 +15,7 @@
 - [ ] hashes
     - https://viniciuschiele.github.io/flask-apscheduler/index.html
     - https://apscheduler.readthedocs.io/en/stable/userguide.html#scheduler-events
+    - selenium
 - [x] sort materials
 - [ ] Stream 
     - https://flask.palletsprojects.com/en/2.2.x/patterns/streaming/

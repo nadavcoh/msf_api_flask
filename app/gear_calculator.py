@@ -1,3 +1,4 @@
+from ast import Pass
 import re
 from flask import (
     Blueprint, flash, g, jsonify, redirect, render_template, request, session, url_for, Markup
@@ -9,7 +10,7 @@ from app.gear import get_gear
 from app.inventory import find_item_in_inventory
 from .char import get_char, get_chars
 from .db import get_db
-from .gear_calculator_functions import gearset_merge, get_char_to_tier
+from .gear_calculator_functions import gearset_merge, get_char_to_tier, get_char_to_tier_crafted, get_gear_flat_cost, multiply_gear_set
 
 gear_calculator = Blueprint('gear_calculator', __name__, url_prefix='/gear-calculator')
 
@@ -62,7 +63,6 @@ def team(id):
         char_df = char_df.astype({'gear_id':str})
         result = pd.merge(result, char_df, how="outer")
     
-    
     result.fillna(0, inplace=True)
     result.drop(index=result.loc[result["gear_id"]=="SC"].index, inplace=True)
     result["need"] = result.sum(axis="columns", numeric_only=True)
@@ -71,6 +71,38 @@ def team(id):
     result["have"] = result.apply(get_inventory_data, axis=1)
     result["remaining"] = result["need"] - result["have"]
     result["remaining"] = [0 if x<0 else x for x in result["remaining"]]
+
+    crafted = pd.DataFrame(columns=["gear_id"], dtype = str)
+    for char_num in range(1,6):
+        char_data2 = get_char_to_tier_crafted(team["char"+str(char_num)], team["to_tier"])
+        char_df2 = pd.DataFrame(data={"gear_id": char_data2["data"].keys(), "char"+str(char_num): char_data2["data"].values()} )
+        char_df2 = char_df2.astype({'gear_id':str})
+        crafted = pd.merge(crafted, char_df2, how="outer")
+    
+    crafted.fillna(0, inplace=True)
+    # crafted.drop(index=result.loc[result["gear_id"]=="SC"].index, inplace=True)
+    crafted["need"] = crafted.sum(axis="columns", numeric_only=True)
+    crafted["have"] = crafted.apply(get_inventory_data, axis=1)
+    crafted.drop(index=crafted.loc[crafted["have"]==0].index, inplace=True)
+    crafted["amount"] = crafted.apply(lambda x: min(x["need"], x["have"]), axis=1)
+    crafted_to_dict = crafted.drop(columns = ["char1", "char2", "char3", "char4", "char5", "need", "have"])
+    crafted_dict = crafted_to_dict.to_dict('records')
+    
+    crafted_gearset_cost = {}
+    for gear in crafted_dict:
+        flat_cost = get_gear_flat_cost(gear["gear_id"])
+        multiple_flat_cost = multiply_gear_set(flat_cost, gear["amount"])
+        crafted_gearset_cost = gearset_merge(crafted_gearset_cost, multiple_flat_cost)
+
+    crafted_df = pd.DataFrame(data={"gear_id": crafted_gearset_cost.keys(), "from_crafted": crafted_gearset_cost.values()})
+    crafted_df.drop(index=crafted_df.loc[crafted_df["gear_id"]=="SC"].index, inplace=True)
+    
+    result = pd.merge(result, crafted_df, how = "outer")
+    result.fillna(0, inplace=True)
+
+    result["remaining_adjusted"] = result["remaining"] - result["from_crafted"]
+    result["remaining_adjusted"] = [0 if x<0 else x for x in result["remaining_adjusted"]]
+
     def get_gear_data (row):
         gear_data = get_gear(row["gear_id"])
         return {"gear_id": row["gear_id"],
@@ -80,7 +112,7 @@ def team(id):
                 }
     gear_data = result.apply (get_gear_data, result_type ='expand', axis = 1)
     result = pd.merge(result, gear_data)
-    result.sort_values(["remaining", "tier", "name"], ascending=[False, False, True], inplace=True)
+    result.sort_values(["remaining_adjusted", "tier", "name"], ascending=[False, False, True], inplace=True)
     result.drop(columns = ["gear_id", "tier"], inplace=True)
     # https://stackoverflow.com/questions/52475458/how-to-sort-pandas-dataframe-with-a-key
     rule = {
@@ -93,7 +125,9 @@ def team(id):
     "char5": 15,
     "need": 5,
     "have": 4,
-    "remaining": 3
+    "remaining": 3,
+    "remaining_adjusted": 2.1,
+    "from_crafted": 2.2
     }
     result.sort_index(axis="columns", inplace = True, key=lambda x: pd.Series(x).apply(lambda y: rule.get(y, 1000)))
     # https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Other-Fun-and-Useful-Stuff
@@ -108,11 +142,12 @@ def team(id):
                 case "name":
                     x = "Name"
                 case _:
-                    x = x.capitalize()
+                    x = x.replace("_"," ")
+                    x = x.title()
         return x
     def make_pretty(styler):
-        styler.highlight_min(subset="remaining", color="palegreen")
-        styler.highlight_between(subset="remaining", left=1)
+        styler.highlight_min(subset="remaining_adjusted", color="palegreen")
+        styler.highlight_between(subset="remaining_adjusted", left=1)
         styler.format_index(formatter=make_index, axis="columns")
         styler.format(thousands=",",
                                 formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
@@ -122,11 +157,56 @@ def team(id):
                                           'char4': "{:,.0f}",
                                           'char5': "{:,.0f}",
                                           'need': "{:,.0f}",
-                                          'remaining': "{:,.0f}"
+                                          'remaining': "{:,.0f}",
+                                          'have': "{:,.0f}",
+                                          'from_crafted': "{:,.0f}",
+                                          'remaining_adjusted': "{:,.0f}"
                                            } )
         return styler
     df_html = result.style.pipe(make_pretty).to_html()
-    return render_template('gear-calculator/team.html', team=team, df_html=Markup(df_html))
+    if len(crafted):
+        gear_data = crafted.apply (get_gear_data, result_type ='expand', axis = 1)
+        crafted = pd.merge(crafted, gear_data)
+    else:
+        crafted.insert(len(crafted.columns), "name", None)
+        crafted.insert(len(crafted.columns), "icon", None)
+        crafted.insert(len(crafted.columns), "tier", None)
+    crafted.sort_values(["tier", "name"], ascending=[False, True], inplace=True)
+    crafted.drop(columns = ["gear_id", "tier"], inplace=True)
+    
+    # https://stackoverflow.com/questions/52475458/how-to-sort-pandas-dataframe-with-a-key
+    rule = {
+    "name": 1,
+    "icon": 2,
+    "char1": 11,
+    "char2": 12,
+    "char3": 13,
+    "char4": 14,
+    "char5": 15,
+    "need": 5,
+    "have": 4,
+    "remaining": 3
+    }
+    crafted.sort_index(axis="columns", inplace = True, key=lambda x: pd.Series(x).apply(lambda y: rule.get(y, 1000)))
+    # https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Other-Fun-and-Useful-Stuff
+    def make_pretty2(styler):
+        # styler.highlight_min(subset="remaining", color="palegreen")
+        styler.highlight_between(subset="have", left=1)
+        styler.format_index(formatter=make_index, axis="columns")
+        styler.format(thousands=",",
+                                formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
+                                          'char1': "{:,.0f}",
+                                          'char2': "{:,.0f}",
+                                          'char3': "{:,.0f}",
+                                          'char4': "{:,.0f}",
+                                          'char5': "{:,.0f}",
+                                          'need': "{:,.0f}",
+                                          'amount': "{:,.0f}"
+                                           } )
+        return styler
+    crafted_html = crafted.style.pipe(make_pretty2).to_html()
+
+    return render_template('gear-calculator/team.html', team=team, df_html=Markup(df_html) + Markup(crafted_html))
 
 @gear_calculator.route('/team/<int:id>/delete')
 @login_required
