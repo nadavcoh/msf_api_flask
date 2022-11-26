@@ -30,7 +30,8 @@ def update_inventory():
     # https://stackoverflow.com/questions/4205181/insert-into-a-mysql-table-or-update-if-exists
     if inventory:
         # Clear user inventory
-        db.execute("DELETE FROM Inventory WHERE 'user_id' = ?;", (current_user.id,))
+        db.execute("""DELETE FROM Inventory WHERE user_id = ?""", (current_user.id,))
+        db.commit()
         db.executemany("REPLACE INTO inventory"
                     "(user_id, item, quantity)"
                     "VALUES (:user_id, :item, :quantity)",
