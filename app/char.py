@@ -39,6 +39,7 @@ def get_chars() -> dict:
     if data is not None:
         return data
     else:
+        print ("Calling get_chars_from_api()")
         data = get_chars_from_api()
         data["cache"] = False
         state = set_data_to_cache(key="char_all", value=data)

@@ -3,6 +3,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 import pandas as pd
+from app.char import get_chars
 from app.farming import get_farming_table
 from app.gear_calculator import all_teams
 from app.msf_api import get_msf_api
@@ -75,7 +76,7 @@ def clear_cache():
 @login_required
 def rebuild_cache():
     def generate():
-        functions = [get_farming_table, all_teams]
+        functions = [get_farming_table, all_teams, get_chars]
         for i in range(len(functions)+1):
             if i>0:
                 functions[i-1]()
