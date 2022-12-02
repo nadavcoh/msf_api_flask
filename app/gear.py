@@ -14,8 +14,8 @@ def get_gear_from_api(gear_id: str) -> dict:
     r = msf_api.get(API_SERVER + endpoint, params=params, token=session["token"])
     data = r.json()
     # if (current_chars_hash != data["meta"]["hashes"]["chars"]):
-    # current_chars_hash = data["meta"]["hashes"]["chars"]
-    # check_hash()
+    current_chars_hash = data["meta"]["hashes"]["chars"]
+    # check_hash() f
     return data
 
 def get_gear(gear: str) -> dict:
