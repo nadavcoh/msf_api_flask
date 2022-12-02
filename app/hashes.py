@@ -110,4 +110,4 @@ def rebuild_cache_debug():
             if i==len(functions):
                 text = "Done"
             yield text
-    return generate(), {"Content-Type": "text/plain"}
+    return list(generate()), {"Content-Type": "text/plain"}
