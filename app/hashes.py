@@ -83,56 +83,9 @@ def rebuild_cache():
                 text = f'Calling {functions[i].__name__}\n'
             if i==0:
                 text = "\n" + text
+                # https://stackoverflow.com/questions/33464381/safari-render-html-as-received
                 text = "." * (1024-len(text)) + text
             if i==len(functions):
                 text = "Done"
             yield text
     return stream_with_context(generate()), {"Content-Type": "text/plain"}
-
-@hashes.route('/strem_test')
-@login_required
-def stream_test():
-    def generate():
-        # https://stackoverflow.com/questions/33464381/safari-render-html-as-received
-        yield "." * (1024)
-        yield '\nCalling get_farming_table()\n'
-        # get_farming_table()
-        sleep (5)
-        yield 'Calling all_teams()\n'
-        sleep (10)
-        yield 'Done'
-    return stream_with_context(generate()), {"Content-Type": "text/plain"}
-
-@hashes.route('/strem_test2')
-@login_required
-def stream_test2():
-    def generate():
-        for row in range(5):
-            sleep(5)
-            yield f"{str(row)}, "
-    return (generate())
-
-@hashes.route('/stream_test3')
-@login_required
-def stream_test3():
-    return stream_template("hashes/stream_test3.html")
-
-
-def stream_template_gist(template_name, **context):                                                                                                                                                 
-    current_app.update_template_context(context)                                                                                                                                                       
-    t = current_app.jinja_env.get_template(template_name)                                                                                                                                              
-    rv = t.stream(context)                                                                                                                                                                     
-    rv.disable_buffering()                                                                                                                                                                     
-    return rv                                                                                                                                                                                  
-
-data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]                                                                                                                                                          
-def generate():                                                                                                                                                                                
-    for item in data:                                                                                                                                                                          
-        yield str(item)                                                                                                                                                                        
-        sleep(1)                                                                                                                                                                               
-
-@hashes.route('/stream_test4')
-def stream_view():                                                                                                                                                                             
-    rows = generate()                                                                                                                                                                          
-    
-    return Response(stream_with_context(stream_template('hashes/stream_test_4.html', rows=rows)), 200, {'Content-Type': 'text/css; charset=utf-8'})
