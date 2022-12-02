@@ -91,3 +91,23 @@ def rebuild_cache():
                 text = "Done"
             yield text
     return stream_with_context(generate()), {"Content-Type": "text/plain"}
+
+@hashes.route('/rebuild_cache_debug')
+@login_required
+def rebuild_cache_debug():
+    def generate():
+        functions = [get_farming_table, all_teams, get_chars]
+        for i in range(len(functions)+1):
+            if i>0:
+                print (f'Calling {functions[i-1].__name__}()')
+                functions[i-1]()
+            if i<len(functions):
+                text = f'Calling {functions[i].__name__}()\n'
+            if i==0:
+                text = "\n" + text
+                # https://stackoverflow.com/questions/33464381/safari-render-html-as-received
+                text = "." * (1024-len(text)) + text
+            if i==len(functions):
+                text = "Done"
+            yield text
+    return generate(), {"Content-Type": "text/plain"}
