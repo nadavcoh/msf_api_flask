@@ -34,14 +34,6 @@ def close_redis(e=None):
 def init_app(app):
     app.teardown_appcontext(close_redis)
 
-def check_hash():
-    redis_client = get_redis()
-    cache_hash = redis_client.get("char_hash").decode()
-    if cache_hash != current_chars_hash:
-        print("Hash mismathch: %s %s", (cache_hash, current_chars_hash))
-        redis_client.flushdb()
-        redis_client.set("char_hash", current_chars_hash)
-
 def get_data_from_cache(key: str) -> str:
     """Data from redis."""
     redis_client = get_redis()
