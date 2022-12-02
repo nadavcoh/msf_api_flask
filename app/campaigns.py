@@ -27,6 +27,7 @@ def get_campaigns() -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
+        print("Calling get_campaigns_from_api()")
         data = get_campaigns_from_api()
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -43,6 +44,7 @@ def get_campaign_names() -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
+        print ("Calling get_campaigns()")
         campaigns = get_campaigns()
         # This block sets saves the respose to redis and serves it directly
         campaign_ids = [current_campaign["id"] for current_campaign in campaigns["data"]]
@@ -79,6 +81,7 @@ def get_campaign(campaign_name: str) -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
+        print (f"Calling get_campaign_from_api({campaign_name})")
         data = get_campaign_from_api(campaign_name)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False

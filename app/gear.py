@@ -29,6 +29,7 @@ def get_gear(gear: str) -> dict:
 
     else:
         # If cache is not found then sends request to the MapBox API
+        print(f"Calling get_gear_from_api({gear})")
         data = get_gear_from_api(gear)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
