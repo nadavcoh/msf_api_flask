@@ -6,3 +6,4 @@ redis
 pyOpenSSL
 requests
 pandas
+matplotlib
