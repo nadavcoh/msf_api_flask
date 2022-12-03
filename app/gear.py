@@ -1,6 +1,6 @@
 from app.nadavcoh_redis import get_data_from_cache, set_data_to_cache
 from app.msf_api import get_msf_api, API_SERVER
-from flask import session
+from flask import session, current_app
 
 def get_gear_from_api(gear_id: str) -> dict:
     """Data from api"""
@@ -29,7 +29,7 @@ def get_gear(gear: str) -> dict:
 
     else:
         # If cache is not found then sends request to the MapBox API
-        print(f"Calling get_gear_from_api({gear})")
+        current_app.logger.info(f"Calling get_gear_from_api({gear})")
         data = get_gear_from_api(gear)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False

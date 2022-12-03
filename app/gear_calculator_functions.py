@@ -2,6 +2,7 @@ from app.gear import get_gear
 from .char import get_char
 from .nadavcoh_redis import get_data_from_cache, set_data_to_cache
 from .roster import find_char_in_roster
+from flask import current_app
 
 def gearset_add(gearset, gear_id: str, n: str):
     result = dict(gearset)
@@ -46,7 +47,7 @@ def get_tier_cost_base_gear (char_name, tier, slots=[True]*6):
 
     else:
         # If cache is not found then sends request to the MapBox API
-        print ("Calling calculate_tier_cost_base_gear", char_name, tier, slots)
+        current_app.logger.info ("Calling calculate_tier_cost_base_gear", char_name, tier, slots)
         data = calculate_tier_cost_base_gear (char_name, tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -75,7 +76,7 @@ def get_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots=[True]*6
 
     else:
         # If cache is not found then sends request to the MapBox API
-        print ("Calling calculate_multi_tier_cost_base_gear", char_name, from_tier, to_tier, slots)
+        current_app.logger.info ("Calling calculate_multi_tier_cost_base_gear", char_name, from_tier, to_tier, slots)
         data = calculate_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -125,7 +126,7 @@ def get_tier_cost_crafted_gear (char_name, tier, slots=[True]*6):
 
     else:
         # If cache is not found then sends request to the MapBox API
-        print ("Calling calculate_tier_cost_crafted_gear", char_name, tier, slots)
+        current_app.logger.info (f"Calling calculate_tier_cost_crafted_gear({char_name}, {tier}, {slots}")
         data = calculate_tier_cost_crafted_gear (char_name, tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -156,7 +157,7 @@ def get_multi_tier_cost_crafted_gear (char_name, from_tier, to_tier, slots=[True
 
     else:
         # If cache is not found then sends request to the MapBox API
-        print ("Calling calculate_multi_tier_cost_crafted_gear", char_name, from_tier, to_tier, slots)
+        current_app.logger.info ("Calling calculate_multi_tier_cost_crafted_gear", char_name, from_tier, to_tier, slots)
         data = calculate_multi_tier_cost_crafted_gear (char_name, from_tier, to_tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False

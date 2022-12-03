@@ -79,7 +79,7 @@ def rebuild_cache():
         functions = [get_farming_table, all_teams, get_chars]
         for i in range(len(functions)+1):
             if i>0:
-                print (f'Calling {functions[i-1].__name__}()')
+                current_app.logger.info (f'Calling {functions[i-1].__name__}()')
                 functions[i-1]()
             if i<len(functions):
                 text = f'Calling {functions[i].__name__}()\n'
@@ -99,7 +99,7 @@ def rebuild_cache_debug():
         functions = [get_farming_table, all_teams, get_chars]
         for i in range(len(functions)+1):
             if i>0:
-                print (f'Calling {functions[i-1].__name__}()')
+                current_app.logger.info (f'Calling {functions[i-1].__name__}()')
                 functions[i-1]()
             if i<len(functions):
                 text = f'Calling {functions[i].__name__}()\n'

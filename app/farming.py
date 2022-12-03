@@ -1,7 +1,7 @@
 import json
 from app.gear import get_gear
 from app.campaigns import get_campaign, get_campaign_names
-from flask import url_for
+from flask import url_for, current_app
 import pandas as pd
 from app.inventory import find_item_in_inventory
 from app.nadavcoh_redis import get_data_from_cache, set_data_to_cache
@@ -40,11 +40,11 @@ def calculate_all_rewards_by_id():
                                         case "quantity":
                                             pass
                                         case _:
-                                            print (current_reward_group_key_chahnceof)
+                                            current_app.logger.info (current_reward_group_key_chahnceof)
                             case "quantity":
                                 pass
                             case _:
-                                print (current_reward_group_key)
+                                current_app.logger.info (current_reward_group_key)
     farming: pd.DataFrame = pd.DataFrame({"id": all_rewards_by_id.keys(), "locations": all_rewards_by_id.values()} )
     gear_data = farming.apply (get_gear_data, result_type ='expand', axis = 1)
     result: pd.DataFrame = pd.merge(farming, gear_data)
@@ -88,7 +88,7 @@ def get_farming_table() -> pd.DataFrame.style:
         data["data"] = pd.DataFrame(json.loads(data["data"]))
         return data
     else:
-        print ("Calling calculate_all_rewards_by_id()")
+        current_app.logger.info ("Calling calculate_all_rewards_by_id()")
         data = calculate_all_rewards_by_id()
         data["cache"] = False
         data["data"] = data["data"].to_json()

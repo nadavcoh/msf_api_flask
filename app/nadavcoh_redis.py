@@ -17,7 +17,7 @@ def redis_connect() -> redis.client.Redis:
         if ping is True:
             return client
     except redis.AuthenticationError:
-        print("AuthenticationError")
+        current_app.logger.info("AuthenticationError")
         sys.exit(1)
 
 def get_redis():

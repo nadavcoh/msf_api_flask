@@ -1,6 +1,6 @@
 from app.nadavcoh_redis import get_data_from_cache, set_data_to_cache
 from app.msf_api import get_msf_api, API_SERVER
-from flask import session
+from flask import session, current_app
 
 def get_campaigns_from_api() -> dict:
     """Data from api"""
@@ -27,7 +27,7 @@ def get_campaigns() -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
-        print("Calling get_campaigns_from_api()")
+        current_app.logger.info("Calling get_campaigns_from_api()")
         data = get_campaigns_from_api()
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -44,7 +44,7 @@ def get_campaign_names() -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
-        print ("Calling get_campaigns()")
+        current_app.logger.info ("Calling get_campaigns()")
         campaigns = get_campaigns()
         # This block sets saves the respose to redis and serves it directly
         campaign_ids = [current_campaign["id"] for current_campaign in campaigns["data"]]
@@ -81,7 +81,7 @@ def get_campaign(campaign_name: str) -> dict:
         return data
     else:
         # If cache is not found then sends request to the MapBox API
-        print (f"Calling get_campaign_from_api({campaign_name})")
+        current_app.logger.info (f"Calling get_campaign_from_api({campaign_name})")
         data = get_campaign_from_api(campaign_name)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False

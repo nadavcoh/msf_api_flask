@@ -1,5 +1,5 @@
 from .nadavcoh_redis import get_data_from_cache, set_data_to_cache
-from .msf_api import get_msf_api
+from .msf_api import get_msf_api, current_app
 
 def get_char_from_api(char_id: str) -> dict:
     msf_api = get_msf_api()
@@ -39,7 +39,7 @@ def get_chars() -> dict:
     if data is not None:
         return data
     else:
-        print ("Calling get_chars_from_api()")
+        current_app.logger.info ("Calling get_chars_from_api()")
         data = get_chars_from_api()
         data["cache"] = False
         state = set_data_to_cache(key="char_all", value=data)

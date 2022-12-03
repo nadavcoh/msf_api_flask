@@ -6,6 +6,7 @@
 
 # Python standard libraries
 from datetime import timedelta
+from logging.config import dictConfig
 import os
 from time import time
 
@@ -35,6 +36,31 @@ from .gear_calculator import gear_calculator
 from .hashes import hashes
 
 def create_app(test_config=None):
+    # Logger https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
+    dictConfig(
+    {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+                "formatter": "default",
+            },
+            "file": {
+                "class": "logging.FileHandler",
+                "filename": "instance/msf-api-flask.log",
+                "formatter": "default",
+            },
+        },
+        "root": {"level": "INFO", "handlers": ["console", "file"]},
+    }
+    )
+    
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
