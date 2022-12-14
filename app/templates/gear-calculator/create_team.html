@@ -5,15 +5,33 @@
 {% endblock %}
 
 {% block content %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+<div id="hacker-list">
+<input class="search" />
+  <span class="sort" data-sort="name">Sort by name</span>
+  <span class="sort" data-sort="traits">Sort by traits</span>
+
   <form method="post">
     <label for="name">Name:</label>
     <input name="name" id="name" value="Team">
     <label for="to_tier">To tier:</label>
     <input name="to_tier" id="to_tier" value="16">
+    <ul class = "list">
       {% for char in chars %}
-        <input type="checkbox" id="{{ char["id"] }}" name="{{ char["id"] }}" value="{{ char["id"] }}">
-        <label for="{{ char["id"] }}"><img src="{{ char["portrait"] }}"> {{ char["name"] }}</label><br>
+      <li>  
+      <input type="checkbox" id="{{ char["id"] }}" name="{{ char["id"] }}" value="{{ char["id"] }}">
+        <label for="{{ char["id"] }}"><img src="{{ char["portrait"] }}"> <span class="name">{{ char["name"] }}</span> <span class="traits">{{char["traits"]}}</span></label><br>
+      </li>
     {% endfor %}
+  </ul>
     <input type="submit" value="Save">
   </form>
+</div>
+  <script>
+    var options = {
+      valueNames: [ 'name', 'traits' ]
+    };
+    
+    var hackerList = new List('hacker-list', options);
+  </script>
 {% endblock %}
