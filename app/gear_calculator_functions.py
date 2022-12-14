@@ -47,7 +47,7 @@ def get_tier_cost_base_gear (char_name, tier, slots=[True]*6):
 
     else:
         # If cache is not found then sends request to the MapBox API
-        current_app.logger.info ("Calling calculate_tier_cost_base_gear", char_name, tier, slots)
+        current_app.logger.info (f"Calling calculate_tier_cost_base_gear({char_name}, {tier}, {slots}")
         data = calculate_tier_cost_base_gear (char_name, tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -76,7 +76,7 @@ def get_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots=[True]*6
 
     else:
         # If cache is not found then sends request to the MapBox API
-        current_app.logger.info ("Calling calculate_multi_tier_cost_base_gear", char_name, from_tier, to_tier, slots)
+        current_app.logger.info (f"Calling calculate_multi_tier_cost_base_gear({char_name}, {from_tier}, {to_tier, slots}")
         data = calculate_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -85,8 +85,13 @@ def get_multi_tier_cost_base_gear (char_name, from_tier, to_tier, slots=[True]*6
 
 def get_char_to_tier(char_id, tier):
     char = find_char_in_roster(char_id)
-    slots_bool_not = [not x for x in char["slots"]]
-    return get_multi_tier_cost_base_gear(char_id,char["tier"],tier,slots_bool_not)
+    if char:
+        slots_bool_not = [not x for x in char["slots"]]
+        from_tier = char["tier"]
+    else:
+        slots_bool_not = [False]*6
+        from_tier = 1
+    return get_multi_tier_cost_base_gear(char_id,from_tier,tier,slots_bool_not)
 
 def calculate_tier_cost_crafted_gear (char_name, tier, slots=[True]*6):
     totalDirectCost = {}
@@ -108,6 +113,7 @@ def calculate_tier_cost_crafted_gear (char_name, tier, slots=[True]*6):
         return recursiveDirectCost
 
     recursiveDirectCost2 = {}
+    current_gear = {"meta": ""}
     for (current_gear_id, quantity) in totalDirectCost.items():
         current_gear = get_gear(current_gear_id)
         for piece in current_gear["data"]["directCost"]:
@@ -157,7 +163,7 @@ def get_multi_tier_cost_crafted_gear (char_name, from_tier, to_tier, slots=[True
 
     else:
         # If cache is not found then sends request to the MapBox API
-        current_app.logger.info ("Calling calculate_multi_tier_cost_crafted_gear", char_name, from_tier, to_tier, slots)
+        current_app.logger.info (f"Calling calculate_multi_tier_cost_crafted_gear({char_name}, {from_tier}, {to_tier}, {slots}")
         data = calculate_multi_tier_cost_crafted_gear (char_name, from_tier, to_tier, slots)
         # This block sets saves the respose to redis and serves it directly
         data["cache"] = False
@@ -166,8 +172,13 @@ def get_multi_tier_cost_crafted_gear (char_name, from_tier, to_tier, slots=[True
 
 def get_char_to_tier_crafted(char_id, tier):
     char = find_char_in_roster(char_id)
-    slots_bool_not = [not x for x in char["slots"]]
-    return get_multi_tier_cost_crafted_gear(char_id, char["tier"], tier, slots_bool_not)
+    if char:
+        slots_bool_not = [not x for x in char["slots"]]
+        from_tier = char["tier"]
+    else:
+        slots_bool_not = [False]*6
+        from_tier = 1
+    return get_multi_tier_cost_crafted_gear(char_id, from_tier, tier, slots_bool_not)
 
 def get_gear_flat_cost (gear_id):
     gear_data = get_gear(gear_id)
