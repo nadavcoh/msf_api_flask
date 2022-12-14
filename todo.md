@@ -1,3 +1,6 @@
+- [ ] Intersection of traits
+- [ ] Easyest team to build
+
 - [ ] Crafted gear
 - [ ] Delete team
 - [ ] Show team gear
