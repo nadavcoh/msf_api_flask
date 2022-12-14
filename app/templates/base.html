@@ -25,7 +25,48 @@
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
+
+<div id="logger" style="font-family: monospace; white-space: nowrap">
+</div>
+<script>
+    const log_url = {{ url_for("log")|tojson }}
+    const log_div = document.getElementById("logger")
+    var parser = new DOMParser();
+    var run = true        
+    function fetch_log(){
+        fetch(log_url, {keepalive: true})
+            .then(response =>  (response.json()))
+            .then(text => log_div.innerHTML += parser.parseFromString(text, 'text/html').body.innerHTML.replace(new RegExp('\r?\n','g'), '<br />'))
+            .then( function(){if (run == true) {setTimeout(fetch_log, 1000)} })
+    }
+    fetch_log()
+</script>
   {% block content %}{% endblock %}
 </section>
+<script>
+  // https://css-tricks.com/send-an-http-request-on-page-exit/
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++){
+    links[i].addEventListener('click', (e) => {
+      e.preventDefault();
+      fetch(e.target.href)
+        .then(res => res.text())
+        .then(text => {
+          window.history.pushState({},"",e.target.href);
+          document.getElementsByTagName("html")[0].innerHTML = text;
+        })
+      })
+    }
+  window.addEventListener( "pageshow", function ( event ) {
+      var historyTraversal = event.persisted || 
+                             ( typeof window.performance != "undefined" && 
+                                  window.performance.navigation.type === 2 );
+      if ( historyTraversal ) {
+        // Handle page restore.
+        window.location.reload();
+      }
+    });
+  
+  </script>
 </body>
 </html>
