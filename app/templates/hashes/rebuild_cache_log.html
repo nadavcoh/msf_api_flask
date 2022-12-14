@@ -1,0 +1,27 @@
+<html>
+<body>
+<div id="logger" style="font-family: monospace; white-space: nowrap">
+</div>
+<script>
+    const log_url = {{ url_for("log")|tojson }}
+    const log_div = document.getElementById("logger")
+    var parser = new DOMParser();
+    var run = true        
+    function fetch_log(){
+        fetch(log_url)
+            .then(response =>  (response.json()))
+            .then(text => log_div.innerHTML += parser.parseFromString(text, 'text/html').body.innerHTML.replace(new RegExp('\r?\n','g'), '<br />'))
+            .then(window.scrollTo(0, document.body.scrollHeight))
+            .then( function(){if (run == true) {setTimeout(fetch_log, 1000)}})
+    }
+    fetch ({{ url_for("hashes.clear_cache")|tojson}})
+        .then(res=>(
+    fetch ({{ url_for("hashes.rebuild_cache_plain")|tojson}})
+        .then(res => (document.getElementById("logger").innerHTML += "Done"))
+        .then(res => (run=false))))
+    fetch_log()
+        
+    
+</script>
+</body>
+</html>

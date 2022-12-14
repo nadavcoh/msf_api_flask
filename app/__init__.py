@@ -9,6 +9,7 @@ from datetime import timedelta
 from logging.config import dictConfig
 import os
 from time import time
+from io import StringIO
 
 # Third-party libraries
 from flask import Flask, redirect, url_for, session, render_template, jsonify, request, flash, Markup
@@ -20,6 +21,7 @@ from flask_login import (
     logout_user,
 )
 from humanize import naturaltime
+from app.char import get_chars
 
 from app.inventory import get_inventory_update_time, update_inventory
 from app.roster import find_char_in_roster, get_roster_update_time, update_roster
@@ -30,13 +32,23 @@ from app.settings import get_msftools_sheetid, set_msftools_sheetid
 from .user import User
 from .msf_api import get_msf_api, API_SERVER
 from .gold import get_gold, update_gold
-from .farming import get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc
+from .farming import get_farming_table, get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc
 from .gear import get_gear
-from .gear_calculator import gear_calculator
+from .gear_calculator import all_teams, gear_calculator
 from .hashes import hashes
 
 def create_app(test_config=None):
     # Logger https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
+    # https://stackoverflow.com/questions/31999627/storing-logger-messages-in-a-string
+    # https://docs.python.org/3/howto/logging-cookbook.html#logging-cookbook
+    # https://docs.python.org/3/library/io.html
+    log_stream = StringIO()
+
+    def filter_maker(level):
+        def filter(record):
+            return (record.module != "_internal")
+        return filter
+
     dictConfig(
     {
         "version": 1,
@@ -45,11 +57,23 @@ def create_app(test_config=None):
                 "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
             }
         },
+        "filters": {
+            "no_internal": {
+                "()" : filter_maker,
+                "level": "INFO"
+            }
+        },
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
                 "stream": "ext://sys.stdout",
                 "formatter": "default",
+            },
+            "stream": {
+                "class": "logging.StreamHandler",
+                "stream": log_stream,
+                "formatter": "default",
+                "filters": ["no_internal"]
             },
             "file": {
                 "class": "logging.FileHandler",
@@ -57,7 +81,7 @@ def create_app(test_config=None):
                 "formatter": "default",
             },
         },
-        "root": {"level": "INFO", "handlers": ["console", "file"]},
+        "root": {"level": "INFO", "handlers": ["console", "file", "stream"]},
     }
     )
     
@@ -233,6 +257,13 @@ def create_app(test_config=None):
     @login_required
     def farming_misc():
         return render_template('farming.html', content=Markup(get_farming_table_html_misc()))
+
+    @app.route("/log")
+    @login_required
+    def log():
+        log = log_stream.getvalue()
+        log_stream.truncate(0)
+        return jsonify(log)
 
     @app.route('/settings', methods=('GET', 'POST'))
     @login_required

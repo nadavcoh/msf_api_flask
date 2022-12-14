@@ -111,3 +111,17 @@ def rebuild_cache_debug():
                 text = "Done"
             yield text
     return list(generate()), {"Content-Type": "text/plain"}
+
+@hashes.route('/rebuild_cache_plain')
+@login_required
+def rebuild_cache_plain():    
+    get_farming_table() 
+    all_teams()
+    get_chars()
+    return "OK", {"Content-Type": "text/plain"}
+
+# https://flask.palletsprojects.com/en/2.2.x/patterns/javascript/
+@hashes.route('/rebuild_cache_log')
+@login_required
+def rebuild_cache_log():
+    return (render_template("hashes/rebuild_cache_log.html"))
