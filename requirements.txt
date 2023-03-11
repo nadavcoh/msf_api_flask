@@ -7,3 +7,4 @@ pyOpenSSL
 requests
 pandas
 matplotlib
+Gunicorn
