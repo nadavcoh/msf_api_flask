@@ -11,7 +11,6 @@ def redis_connect() -> redis.client.Redis:
             host="containers-us-west-202.railway.app",
 #            port=6379,
             port = 5851,
-            user = "default",
             password="CSHnFW1AuBRot6MZTyJQ",
             db=0,
             socket_timeout=5,
