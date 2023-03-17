@@ -1,3 +1,8 @@
+- [ ] https://pypi.org/project/requests-ratelimiter/
+- [ ] https://flask.palletsprojects.com/en/2.2.x/cli/
+- [ ] https://flask.palletsprojects.com/en/2.2.x/patterns/javascript/
+- [ ] https://stackoverflow.com/questions/45759966/counting-unique-values-in-a-column-in-pandas-dataframe-like-in-qlik
+
 - [ ] Intersection of traits
 - [ ] Easyest team to build
 
