@@ -270,7 +270,7 @@ def create_app(test_config=None):
     @app.route("/sqlite")
     @login_required
     def sqlite():
-        folder = os.path.join(current_app.root_path, "instance")
+        folder = os.path.join(current_app.root_path, "/instance")
         return send_from_directory(directory=folder, filename="msf_api_flask.sqlite") 
 
     @app.route('/settings', methods=('GET', 'POST'))
