@@ -12,7 +12,7 @@ from time import time
 from io import StringIO
 
 # Third-party libraries
-from flask import Flask, redirect, url_for, session, render_template, jsonify, request, flash, Markup
+from flask import Flask, current_app, redirect, send_from_directory, url_for, session, render_template, jsonify, request, flash, Markup
 from flask_login import (
     LoginManager,
     current_user,
@@ -266,6 +266,12 @@ def create_app(test_config=None):
         log = log_stream.getvalue()
         log_stream.truncate(0)
         return jsonify(log)
+
+    @app.route("/sqlite")
+    @login_required
+    def sqlite():
+        folder = os.path.join(current_app.root_path, "instance")
+        return send_from_directory(directory=folder, filename="msf_api_flask.sqlite") 
 
     @app.route('/settings', methods=('GET', 'POST'))
     @login_required
