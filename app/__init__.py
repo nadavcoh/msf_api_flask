@@ -185,8 +185,7 @@ def create_app(test_config=None):
         # profile = msf_api.get('/user', token=token)
         # a = msf_api.userinfo()
         
-        user_id = token["userinfo"]["aud"][0]
-
+        user_id = token["userinfo"]["sub"]
         endpoint = "/player/v1/card"
         response = msf_api.get(endpoint)
         card = response.json()
