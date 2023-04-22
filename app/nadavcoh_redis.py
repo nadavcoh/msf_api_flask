@@ -8,10 +8,12 @@ def redis_connect() -> redis.client.Redis:
     try:
         client = redis.Redis(
 #            host="localhost",
-            host="containers-us-west-202.railway.app",
+#            host="containers-us-west-202.railway.app",
+            host="red-cg6de5g2qv28u2p72rkg"
 #            port=6379,
-            port = 5851,
-            password="CSHnFW1AuBRot6MZTyJQ",
+#            port = 5851,
+            port = 6379
+            #password="CSHnFW1AuBRot6MZTyJQ",
             db=0,
             socket_timeout=5,
         )
