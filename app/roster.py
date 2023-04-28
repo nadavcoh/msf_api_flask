@@ -59,6 +59,7 @@ def update_roster():
         db.commit()
 
 def find_char_in_roster (id):
+    get_roster_update_time()
     db = get_db()
     resp = db.execute("""SELECT char_id, tier, slots, yellow 
                         FROM Roster  
@@ -82,5 +83,7 @@ def get_roster_update_time():
     if resp[0]:
         resp = json.loads(resp[0]).get("updated")
     else:
-        resp = resp[0]
+        # resp = resp[0]
+        update_roster()
+        resp = get_roster_update_time()
     return resp

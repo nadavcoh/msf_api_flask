@@ -53,6 +53,7 @@ def update_inventory():
         db.commit()
 
 def find_item_in_inventory (item):
+    get_inventory_update_time()
     db = get_db()
     resp = db.execute("""SELECT quantity 
                         FROM Inventory  
@@ -72,5 +73,7 @@ def get_inventory_update_time():
     if resp[0]:
         resp = json.loads(resp[0]).get("updated")
     else:
-        resp = resp[0]
+        # resp = resp[0]
+        update_inventory()
+        resp = get_inventory_update_time()
     return resp
