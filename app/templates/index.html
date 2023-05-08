@@ -17,6 +17,7 @@
         {% if updated["roster"] %} document.getElementById("roster_updated").innerHTML = dayjs.unix({{ updated["roster"] }}).fromNow(); {% endif %}
       });
     </script>
+    <p>{{ ip }}</p>
     <p>Gold: {{ gold_text["current"] }}/{{ gold_text["goal"] }}<br>
       Left: {{ gold_text["left"] }}<br>
       Upadated <span id="gold_updated">{{ gold_text["updated"] }}</span> <a class="button" href="{{ url_for('update_gold_route') }}">Update</a></p>

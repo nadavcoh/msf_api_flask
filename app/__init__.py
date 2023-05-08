@@ -158,7 +158,7 @@ def create_app(test_config=None):
                 links.append((url, rule.endpoint))
         # links is now a list of url, endpoint tuples
       
-        return render_template('index.html', gold_text=gold_text, links=links, updated = updated, time=time, naturaltime=naturaltime)
+        return render_template('index.html', gold_text=gold_text, links=links, updated = updated, time=time, naturaltime=naturaltime, ip=whatismyip.whatismyip())
 
     @app.route("/debug")
     @login_required
