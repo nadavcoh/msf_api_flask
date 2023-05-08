@@ -125,7 +125,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        current_app.logger.info (whatismyip.whatismyip()
+        current_app.logger.info (whatismyip.whatismyip())
         gold_text = {}
         updated = {}
         if current_user.is_authenticated:
