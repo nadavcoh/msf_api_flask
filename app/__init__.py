@@ -10,6 +10,7 @@ from logging.config import dictConfig
 import os
 from time import time
 from io import StringIO
+import whatismyip
 
 # Third-party libraries
 from flask import Flask, current_app, redirect, send_from_directory, url_for, session, render_template, jsonify, request, flash, Markup
@@ -124,6 +125,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
+        current_app.logger.info (whatismyip.whatismyip()
         gold_text = {}
         updated = {}
         if current_user.is_authenticated:
@@ -276,14 +278,22 @@ def create_app(test_config=None):
     @app.route('/settings', methods=('GET', 'POST'))
     @login_required
     def settings():
-        msf_tools_sheetid = get_msftools_sheetid()
+        #msf_tools_sheetid = get_msftools_sheetid()
 
         if request.method == 'POST':
             msf_tools_sheetid = request.form['msf_tools_sheetid']
-            set_msftools_sheetid(msf_tools_sheetid)
+            #set_msftools_sheetid(msf_tools_sheetid)
             flash("Saved")
 
         return render_template('settings.html', msf_tools_sheetid=msf_tools_sheetid)
+
+    @app.errorhandler(500)
+    def error(e):
+        # note that we set the 500 status explicitly
+        dump = vars()
+        current_app.logger.info (dump)
+        current_app.logger.info (whatismyip.whatismyip())
+        return render_template('error.html', content = dump), 500
 
     app.register_blueprint(gear_calculator)
     app.register_blueprint(hashes)
