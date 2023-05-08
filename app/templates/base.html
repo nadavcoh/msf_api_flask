@@ -45,7 +45,7 @@
 </section>
 <script>
   // https://css-tricks.com/send-an-http-request-on-page-exit/
-  var links = document.getElementsByTagName('a');
+  /*var links = document.getElementsByTagName('a');
   for (var i = 0; i < links.length; i++){
     links[i].addEventListener('click', (e) => {
       e.preventDefault();
@@ -56,8 +56,8 @@
           document.getElementsByTagName("html")[0].innerHTML = text;
         })
       })
-    }
-  window.addEventListener( "pageshow", function ( event ) {
+    }*/
+  /*window.addEventListener( "pageshow", function ( event ) {
       var historyTraversal = event.persisted || 
                              ( typeof window.performance != "undefined" && 
                                   window.performance.navigation.type === 2 );
@@ -65,7 +65,7 @@
         // Handle page restore.
         window.location.reload();
       }
-    });
+    });*/
   
   </script>
 </body>
