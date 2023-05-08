@@ -290,7 +290,7 @@ def create_app(test_config=None):
     @app.errorhandler(500)
     def error(e):
         # note that we set the 500 status explicitly
-        dump = globals().__repr__() + e.get_response().__repr__() + e.name.__repr__() + e.description.__repr__()
+        dump = globals().__repr__() + e.get_response().__repr__() + e.name.__repr__() + e.description.__repr__() + e.__str__()
         current_app.logger.info (dump)
         current_app.logger.info (whatismyip.whatismyip())
         return render_template('error.html', content = dump), 500
