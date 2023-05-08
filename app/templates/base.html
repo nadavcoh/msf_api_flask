@@ -16,6 +16,7 @@
     {% else %}
       <li><a href="{{ url_for('login') }}">Log In</a>
     {% endif %}
+      <li>{{ whatismyip.whatismyip() }}</li>
   </ul>
 </nav>
 <section class="content">
