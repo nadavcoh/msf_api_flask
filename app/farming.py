@@ -13,38 +13,39 @@ def calculate_all_rewards_by_id():
         current_campaign = get_campaign(current_campaign_name)
         for current_chapter_num, current_chapter_data in current_campaign["data"]["chapters"].items():
             for current_tier_num, current_tier_data in current_chapter_data["tiers"].items():
-                for current_reward_group in current_tier_data["rewards"]["allOf"]:
-                    for current_reward_group_key, current_reward_group_value in current_reward_group.items():
-                        match current_reward_group_key:
-                            case "item":
-                                if (current_reward_group_value != "SC" and current_reward_group_value != "XP"):
-                                    #print (current_reward_group_value)
-                                    reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
-                                    if (current_reward_group_value not in all_rewards_by_id):
-                                        all_rewards_by_id[current_reward_group_value] = [reward]
-                                    else:
-                                        all_rewards_by_id[current_reward_group_value].append(reward)
-                                pass
-                            case "chanceOf":
-                                for current_reward_group_key_chahnceof, current_reward_group_value_chanceof in current_reward_group_value.items():
-                                    match current_reward_group_key_chahnceof:
-                                        case "item":
-                                            if (current_reward_group_value_chanceof != "SC" and current_reward_group_value_chanceof != "XP"):
-                                                #print (current_reward_group_value_chanceof)
-                                                reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
-                                                if (current_reward_group_value_chanceof not in all_rewards_by_id):
-                                                    all_rewards_by_id[current_reward_group_value_chanceof] = [reward]
-                                                else:
-                                                    all_rewards_by_id[current_reward_group_value_chanceof].append(reward)
-                                            pass
-                                        case "quantity":
-                                            pass
-                                        case _:
-                                            current_app.logger.info (current_reward_group_key_chahnceof)
-                            case "quantity":
-                                pass
-                            case _:
-                                current_app.logger.info (current_reward_group_key)
+                if current_tier_data:
+                    for current_reward_group in current_tier_data["rewards"]["allOf"]:
+                        for current_reward_group_key, current_reward_group_value in current_reward_group.items():
+                            match current_reward_group_key:
+                                case "item":
+                                    if (current_reward_group_value != "SC" and current_reward_group_value != "XP"):
+                                        #print (current_reward_group_value)
+                                        reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
+                                        if (current_reward_group_value not in all_rewards_by_id):
+                                            all_rewards_by_id[current_reward_group_value] = [reward]
+                                        else:
+                                            all_rewards_by_id[current_reward_group_value].append(reward)
+                                    pass
+                                case "chanceOf":
+                                    for current_reward_group_key_chahnceof, current_reward_group_value_chanceof in current_reward_group_value.items():
+                                        match current_reward_group_key_chahnceof:
+                                            case "item":
+                                                if (current_reward_group_value_chanceof != "SC" and current_reward_group_value_chanceof != "XP"):
+                                                    #print (current_reward_group_value_chanceof)
+                                                    reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
+                                                    if (current_reward_group_value_chanceof not in all_rewards_by_id):
+                                                        all_rewards_by_id[current_reward_group_value_chanceof] = [reward]
+                                                    else:
+                                                        all_rewards_by_id[current_reward_group_value_chanceof].append(reward)
+                                                pass
+                                            case "quantity":
+                                                pass
+                                            case _:
+                                                current_app.logger.info (current_reward_group_key_chahnceof)
+                                case "quantity":
+                                    pass
+                                case _:
+                                    current_app.logger.info (current_reward_group_key)
     farming: pd.DataFrame = pd.DataFrame({"id": all_rewards_by_id.keys(), "locations": all_rewards_by_id.values()} )
     gear_data = farming.apply (get_gear_data, result_type ='expand', axis = 1)
     result: pd.DataFrame = pd.merge(farming, gear_data)
