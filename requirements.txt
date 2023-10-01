@@ -9,3 +9,4 @@ pandas
 matplotlib
 Gunicorn
 WhatIsMyIP
+Werkzeug==2.3.7
