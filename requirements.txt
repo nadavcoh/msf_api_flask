@@ -1,5 +1,5 @@
 Authlib
-Flask
+Flask=2.3.3
 Flask_Login
 humanize
 redis
