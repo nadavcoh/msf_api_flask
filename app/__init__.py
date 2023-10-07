@@ -13,7 +13,7 @@ from io import StringIO
 import whatismyip
 
 # Third-party libraries
-from flask import Flask, current_app, redirect, send_from_directory, url_for, session, render_template, jsonify, request, flash, Markup
+from flask import Flask, current_app, redirect, send_from_directory, url_for, session, render_template, jsonify, request, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -22,8 +22,9 @@ from flask_login import (
     logout_user,
 )
 from humanize import naturaltime
-from app.char import get_chars
+from markupsafe import Markup
 
+from app.char import get_chars
 from app.inventory import get_inventory_update_time, update_inventory
 from app.roster import find_char_in_roster, get_roster_update_time, update_roster
 from app.settings import get_msftools_sheetid, set_msftools_sheetid

@@ -1,8 +1,10 @@
 from flask import (
-    Blueprint, Response, flash, g, jsonify, redirect, render_template, request, session, stream_template, stream_with_context, url_for, Markup, current_app
+    Blueprint, Response, flash, g, jsonify, redirect, render_template, request, session, stream_template, stream_with_context, url_for, current_app
 )
 from flask_login import current_user, login_required
 import pandas as pd
+from markupsafe import Markup
+
 from app.char import get_chars
 from app.farming import get_farming_table
 from app.gear_calculator import all_teams

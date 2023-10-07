@@ -1,11 +1,12 @@
 import re
 from flask import (
-    Blueprint, flash, g, jsonify, redirect, render_template, request, session, url_for, Markup
+    Blueprint, flash, g, jsonify, redirect, render_template, request, session, url_for
 )
 from flask_login import current_user, login_required
 import pandas as pd
-from app.gear import get_gear
+from markupsafe import Markup
 
+from app.gear import get_gear
 from app.inventory import find_item_in_inventory
 from .char import get_char, get_chars
 from .db import get_db
