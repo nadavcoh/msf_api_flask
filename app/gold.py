@@ -43,7 +43,7 @@ def get_gold_from_db():
     if resp["gold"]:
         resp = json.loads(resp["gold"])
     else:
-        resp = resp[0]
+        resp = resp["gold"]
     return resp
 
 def set_gold_to_db(gold):
