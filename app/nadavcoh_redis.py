@@ -7,12 +7,14 @@ from flask import current_app, g
 def redis_connect() -> redis.client.Redis:
     try:
         client = redis.Redis(
-#            host="localhost",
+            host=current_app.config["REDIS_HOST"],
+            port=current_app.config["REDIS_PORT"],
+            # host="localhost",
 #            host="containers-us-west-202.railway.app",
-            host="red-cg6de5g2qv28u2p72rkg",
+#            host="red-cg6de5g2qv28u2p72rkg",
 #            port=6379,
 #            port = 5851,
-            port = 6379,
+ #           port = 6379,
             #password="CSHnFW1AuBRot6MZTyJQ",
             db=0,
             socket_timeout=5,
