@@ -1,16 +1,28 @@
 import sqlite3
+import psycopg
 
 import click
 from flask import current_app, g
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
+        match current_app.config["DB_TYPE"]:
+            case "pg":
+                dblib = psycopg
+            case "sqlite":
+                dblib = sqlite3
+            case _:
+                dblib = sqlite3
+        db = dblib.connect(
+            current_app.config['DATABASE'], row_factory=psycopg.rows.dict_row
+            # detect_types=dblib.PARSE_DECLTYPES
         )
-        g.db.row_factory = sqlite3.Row
-
+        db.autocommit = True
+        # g.db.row_factory = dblib.Row
+        if (db.execute("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';").rowcount == 0):
+            with current_app.open_resource('schema.sql') as f:
+                db.execute(f.read().decode('utf8'))
+        g.db = db
     return g.db
 
 

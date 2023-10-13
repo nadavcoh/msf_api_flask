@@ -19,13 +19,13 @@ def get_roster_from_api(since = None):
 def update_roster():
     db = get_db()
     resp = db.execute(
-        "SELECT roster FROM user WHERE id = ?", (current_user.id,)
+        "SELECT roster from My_Users WHERE id = %s", (current_user.id,)
     ).fetchone()
-    if resp[0]:
-        meta = json.loads(resp[0])
+    if resp["roster"]:
+        meta = json.loads(resp["roster"])
         asOf = meta["asOf"]
     else:
-        asOf = resp[0]
+        asOf = resp["roster"]
     roster = get_roster_from_api(asOf)
     
     # https://stackoverflow.com/questions/33636191/insert-a-list-of-dictionaries-into-an-sql-table-using-python
@@ -33,28 +33,29 @@ def update_roster():
     # https://stackoverflow.com/questions/4205181/insert-into-a-mysql-table-or-update-if-exists
     if roster:
         # Clear current roster    
-        db.execute("DELETE FROM Roster WHERE 'user_id' = ?;", (current_user.id,))
+        db.execute("DELETE FROM Roster WHERE 'user_id' = %s;", (current_user.id,))
         def dump_slots(char):
             char["gearSlots"] = json.dumps(char["gearSlots"])
             return char
         roster["data"] = [dump_slots(k) for k in roster["data"]]
-        db.executemany("REPLACE INTO Roster"
+        db.cursor().executemany("INSERT INTO Roster"
                     "(user_id, char_id, tier, slots, yellow)"
-                    "VALUES (:user_id, :id, :gearTier, :gearSlots, :activeYellow)",
+                    "VALUES (%(user_id)s, %(id)s, %(gearTier)s, %(gearSlots)s, %(activeYellow)s)"
+                    "ON CONFLICT DO NOTHING;",
                     [k|{"user_id": current_user.id} for k in roster["data"]])
         roster["meta"]["updated"] = time()
         db.execute(
-        """UPDATE user
-        SET roster = ?
-        WHERE id = ?;""",
+        """UPDATE My_Users
+        SET roster = %s
+        WHERE id = %s;""",
         (json.dumps(roster["meta"]), current_user.id))
         db.commit()
     else:
         meta["updated"] = time()
         db.execute(
-        """UPDATE user
-        SET roster = ?
-        WHERE id = ?;""",
+        """UPDATE My_Users
+        SET roster = %s
+        WHERE id = %s;""",
         (json.dumps(meta), current_user.id))
         db.commit()
 
@@ -63,7 +64,7 @@ def find_char_in_roster (id):
     db = get_db()
     resp = db.execute("""SELECT char_id, tier, slots, yellow 
                         FROM Roster  
-                        WHERE "user_id" = ? AND char_id = ?;
+                        WHERE "user_id" = %s AND char_id = %s;
                         """, (current_user.id, id)).fetchone()
     if resp:
         char = dict(resp)
@@ -78,10 +79,10 @@ def find_char_in_roster (id):
 def get_roster_update_time():
     db = get_db()
     resp = db.execute(
-        "SELECT roster FROM user WHERE id = ?", (current_user.id,)
+        "SELECT roster from My_Users WHERE id = %s", (current_user.id,)
     ).fetchone()
-    if resp[0]:
-        resp = json.loads(resp[0]).get("updated")
+    if resp["roster"]:
+        resp = json.loads(resp["roster"]).get("updated")
     else:
         # resp = resp[0]
         update_roster()

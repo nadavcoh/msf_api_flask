@@ -25,6 +25,7 @@ from humanize import naturaltime
 from markupsafe import Markup
 
 from app.char import get_chars
+from app.db import get_db
 from app.inventory import get_inventory_update_time, update_inventory
 from app.roster import find_char_in_roster, get_roster_update_time, update_roster
 from app.settings import get_msftools_sheetid, set_msftools_sheetid
@@ -126,6 +127,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
+        get_db()
         current_app.logger.info ("IP: " + whatismyip.whatismyip())
         gold_text = {}
         updated = {}

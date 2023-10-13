@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS My_Users;
 DROP TABLE IF EXISTS Inventory;
 DROP TABLE IF EXISTS Roster;
 DROP TABLE IF EXISTS Teams;
 
-CREATE TABLE User (
+CREATE TABLE My_Users (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   icon TEXT NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Inventory (
   user_id TEXT NOT NULL,
   item TEXT NOT NULL,
   quantity INT NOT NULL,
-  FOREIGN KEY(user_id) REFERENCES user(id),
+  FOREIGN KEY(user_id) REFERENCES My_Users(id),
   CONSTRAINT PK_Inventory PRIMARY KEY (user_id, item)
 );
 
@@ -30,13 +30,13 @@ CREATE TABLE Roster (
   tier INT NOT NULL,
   slots TEXT NOT NULL,
   yellow INT NOT NULL,
-  FOREIGN KEY(user_id) REFERENCES user(id),
+  FOREIGN KEY(user_id) REFERENCES My_Users(id),
   CONSTRAINT PK_Roster PRIMARY KEY (user_id, char_id)
 );
 
 CREATE TABLE Teams (
   user_id TEXT NOT NULL,
-  team_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  team_id SERIAL PRIMARY KEY,
   name TEXT,
   char1 TEXT,
   char2 TEXT,
@@ -44,5 +44,5 @@ CREATE TABLE Teams (
   char4 TEXT,
   char5 TEXT,
   to_tier INT,
-  FOREIGN KEY(user_id) REFERENCES user(id)
+  FOREIGN KEY(user_id) REFERENCES My_Users(id)
 );

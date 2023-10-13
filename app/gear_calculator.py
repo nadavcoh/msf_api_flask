@@ -26,7 +26,7 @@ def create_team():
         db = get_db()
         db.execute(
             "INSERT INTO Teams (user_id, char1, char2, char3, char4, char5, to_tier, name) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (current_user.id, chars[0], chars[1], chars[2], chars[3], chars[4], to_tier, name),
         )
         db.commit()
@@ -42,7 +42,7 @@ def index():
     teams = db.execute(
         """SELECT team_id, char1, char2, char3, char4, char5, to_tier, name
         FROM Teams
-        WHERE "user_id" = ?""", (current_user.id,)
+        WHERE "user_id" = %s""", (current_user.id,)
     ).fetchall()
     return render_template('gear-calculator/index.html', teams=teams)
 
@@ -53,7 +53,7 @@ def team(id):
     team = db.execute(
         """SELECT team_id, char1, char2, char3, char4, char5, to_tier, name
         FROM Teams
-        WHERE "user_id" = ? and "team_id" = ?""", (current_user.id, id)
+        WHERE "user_id" = %s and "team_id" = %s""", (current_user.id, id)
     ).fetchone()
 
     result = pd.DataFrame(columns=["gear_id"], dtype = str)
@@ -213,7 +213,7 @@ def team(id):
 @login_required
 def delete_team(id):
     db = get_db()
-    db.execute('DELETE FROM Teams WHERE team_id = ? and "user_id" = ?', (id, current_user.id))
+    db.execute('DELETE FROM Teams WHERE team_id = %s and "user_id" = %s', (id, current_user.id))
     db.commit()
     return redirect(url_for('gear_calculator.index'))
 
@@ -224,7 +224,7 @@ def all_teams():
     teams = db.execute(
         """SELECT team_id, char1, char2, char3, char4, char5, to_tier, name
         FROM Teams
-        WHERE "user_id" = ?""", (current_user.id,)
+        WHERE "user_id" = %s""", (current_user.id,)
     ).fetchall()
     result = pd.DataFrame(columns=["gear_id"], dtype = str)
     for team in teams:

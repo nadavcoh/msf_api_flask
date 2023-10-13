@@ -13,13 +13,13 @@ class User(UserMixin):
     def get(user_id):
         db = get_db()
         user = db.execute(
-            "SELECT * FROM user WHERE id = ?", (user_id,)
+            "SELECT * FROM My_Users WHERE id = %s", (user_id,)
         ).fetchone()
         if not user:
             return None
 
         user = User(
-            id_=user[0], name=user[1], icon=user[2], frame=user[3]
+            id_=user["id"], name=user["name"], icon=user["icon"], frame=user["frame"]
         )
         return user
 
@@ -27,8 +27,8 @@ class User(UserMixin):
     def create(id_, name, icon, frame):
         db = get_db()
         db.execute(
-            "INSERT INTO user (id, name, icon, frame) "
-            "VALUES (?, ?, ?, ?)",
+            "INSERT INTO My_Users (id, name, icon, frame) "
+            "VALUES (%s, %s, %s, %s)",
             (id_, name, icon, frame),
         )
         db.commit()

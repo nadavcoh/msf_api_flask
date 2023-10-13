@@ -10,3 +10,4 @@ matplotlib
 Gunicorn
 WhatIsMyIP
 markupsafe
+psycopg[binary]

@@ -38,10 +38,10 @@ def get_gold():
 def get_gold_from_db():
     db = get_db()
     resp = db.execute(
-        "SELECT gold FROM user WHERE id = ?", (current_user.id,)
+        "SELECT gold from My_Users WHERE id = %s", (current_user.id,)
     ).fetchone()
-    if resp[0]:
-        resp = json.loads(resp[0])
+    if resp["gold"]:
+        resp = json.loads(resp["gold"])
     else:
         resp = resp[0]
     return resp
@@ -49,9 +49,9 @@ def get_gold_from_db():
 def set_gold_to_db(gold):
     db = get_db()
     db.execute(
-        """UPDATE user
-        SET gold = ?
-        WHERE id = ?;""",
+        """UPDATE My_Users
+        SET gold = %s
+        WHERE id = %s;""",
         (json.dumps(gold), current_user.id),
     )
     db.commit()
