@@ -147,3 +147,4 @@ key.crt
 key.key
 *.bak
 config.py
+instance/msf_api_flask.sqlite
