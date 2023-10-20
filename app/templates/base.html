@@ -28,7 +28,7 @@
 
 <div id="logger" style="font-family: monospace; white-space: nowrap">
 </div>
-<script>
+<!-- <script>
     const log_url = {{ url_for("log")|tojson }}
     const log_div = document.getElementById("logger")
     var parser = new DOMParser();
@@ -40,7 +40,7 @@
             .then( function(){if (run == true) {setTimeout(fetch_log, 1000)} })
     }
     fetch_log()
-</script>
+</script> -->
   {% block content %}{% endblock %}
 </section>
 <script>

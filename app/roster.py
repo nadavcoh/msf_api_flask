@@ -39,8 +39,8 @@ def update_roster():
             return char
         roster["data"] = [dump_slots(k) for k in roster["data"]]
         db.cursor().executemany("INSERT INTO Roster"
-                    "(user_id, char_id, tier, slots, yellow)"
-                    "VALUES (%(user_id)s, %(id)s, %(gearTier)s, %(gearSlots)s, %(activeYellow)s)"
+                    "(user_id, char_id, tier, slots, yellow, red)"
+                    "VALUES (%(user_id)s, %(id)s, %(gearTier)s, %(gearSlots)s, %(activeYellow)s, %(activeRed)s)"
                     "ON CONFLICT DO NOTHING;",
                     [k|{"user_id": current_user.id} for k in roster["data"]])
         roster["meta"]["updated"] = time()
@@ -62,7 +62,7 @@ def update_roster():
 def find_char_in_roster (id):
     get_roster_update_time()
     db = get_db()
-    resp = db.execute("""SELECT char_id, tier, slots, yellow 
+    resp = db.execute("""SELECT char_id, tier, slots, yellow, red 
                         FROM Roster  
                         WHERE "user_id" = %s AND char_id = %s;
                         """, (current_user.id, id)).fetchone()

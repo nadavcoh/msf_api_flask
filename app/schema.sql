@@ -30,6 +30,7 @@ CREATE TABLE Roster (
   tier INT NOT NULL,
   slots TEXT NOT NULL,
   yellow INT NOT NULL,
+  red INT NOT NULL,
   FOREIGN KEY(user_id) REFERENCES My_Users(id),
   CONSTRAINT PK_Roster PRIMARY KEY (user_id, char_id)
 );

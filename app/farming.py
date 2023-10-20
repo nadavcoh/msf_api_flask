@@ -40,12 +40,50 @@ def calculate_all_rewards_by_id():
                                                 pass
                                             case "quantity":
                                                 pass
+                                            case "oneOf":
+                                                for oneof_arrayitem in current_reward_group_value_chanceof:
+                                                    for oneof_key, oneof_value in oneof_arrayitem.items():
+                                                        match oneof_key:
+                                                            case "item":
+                                                                if (oneof_value != "SC" and oneof_value != "XP"):
+                                                                    reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
+                                                                    if (oneof_value not in all_rewards_by_id):
+                                                                        all_rewards_by_id[oneof_value] = [reward]
+                                                                    else:
+                                                                        all_rewards_by_id[oneof_value].append(reward)
+                                                                pass
+                                                            case "quantity":
+                                                                pass
+                                                            case "weight":
+                                                                pass
+                                                            case _:
+                                                                current_app.logger.info("Unmatched3: "+oneof_key)
                                             case _:
-                                                current_app.logger.info (current_reward_group_key_chahnceof)
+                                                current_app.logger.info ("Unmatched2: "+current_reward_group_key_chahnceof)
+                                case "oneOf":
+                                    for oneof_arrayitem in current_reward_group_value:
+                                        for oneof_key, oneof_value in oneof_arrayitem.items():
+                                            match oneof_key:
+                                                case "item":
+                                                    if (oneof_value != "SC" and oneof_value != "XP"):
+                                                        reward = {"campaign_id": current_campaign_name, "chapter": current_chapter_num, "tier": current_tier_num}
+                                                        if (oneof_value not in all_rewards_by_id):
+                                                            all_rewards_by_id[oneof_value] = [reward]
+                                                        else:
+                                                            all_rewards_by_id[oneof_value].append(reward)
+                                                    pass
+                                                case "quantity":
+                                                    pass
+                                                case "weight":
+                                                    pass
+                                                case "maxQuantity":
+                                                    pass
+                                                case _:
+                                                    current_app.logger.info("Unmatched4: "+oneof_key)
                                 case "quantity":
                                     pass
                                 case _:
-                                    current_app.logger.info (current_reward_group_key)
+                                    current_app.logger.info ("Unmatched1: "+current_reward_group_key)
     farming: pd.DataFrame = pd.DataFrame({"id": all_rewards_by_id.keys(), "locations": all_rewards_by_id.values()} )
     gear_data = farming.apply (get_gear_data, result_type ='expand', axis = 1)
     result: pd.DataFrame = pd.merge(farming, gear_data)
@@ -65,6 +103,9 @@ def get_gear_data (row):
             "characterId": gear_data["data"].get("characterId"),
             "explode1": explode[0],
             "explode2": (explode[1] if len(explode)>1 else ""),
+            "explode3": (explode[2] if len(explode)>2 else ""),
+            "explode4": (explode[3] if len(explode)>3 else ""),
+            "rs": (explode[3] if len(explode)>3 else (explode[2] if len(explode)>2 else ""))
             }
 
 def get_inventory_data (row):
@@ -72,7 +113,9 @@ def get_inventory_data (row):
     char = find_char_in_roster(gear_data["data"].get("characterId"))
     return {"id": row["id"],
             "inventory": find_item_in_inventory(row["id"]),
-            "yellow": char.get("yellow")  }
+            "yellow": char.get("yellow"),
+            "red": char.get("red"),
+            "red_delta": (char.get("yellow") - char.get("red")) if char else ""}
 
 def get_farming_locations(row):
     result = "<div class='reward'><ul class='locations'>"
@@ -151,6 +194,18 @@ def get_farming_table_html_iso8():
                                           'tier': "{:.0f}",
                                           'yellow': "{:.0f}" } ).to_html()
 
+def get_farming_table_html_rs():
+    farming = get_farming_inventory()
+    farming.drop(columns="locations", inplace = True)
+    farming = farming.loc[(farming["explode1"]=="RS")]
+    farming.sort_values(["red_delta", "red"], ascending=[False, True] , inplace=True)
+    farming.drop(columns = ["id", "characterId", "explode1", "explode2", "tier", "explode3", "explode4", "inventory"], inplace=True)
+    return farming.style.format(thousands=",",
+                                formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
+                                          'tier': "{:.0f}",
+                                          'yellow': "{:.0f}",
+                                          'red': "{:.0f}" } ).to_html()
+
 def get_farming_table_html_char_all():
     farming: str = get_farming_inventory()
     farming.drop(columns="locations", inplace = True)
@@ -167,7 +222,22 @@ def get_farming_table_html_misc():
     farming = farming.loc[(farming["explode1"]!="GEAR")]
     farming = farming.loc[(farming["explode1"]!="ISOITEM")]
     farming = farming.loc[(farming["explode1"]!="SHARD")]
+    farming = farming.loc[(farming["explode1"]!="RS")]
     farming.drop(columns = ["characterId", "explode2", "tier", "yellow"], inplace=True)
+    farming.sort_values(["id"], inplace=True)
+    return farming.style.format(thousands=",",
+                                formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
+                                          'tier': "{:.0f}",
+                                          'yellow': "{:.0f}" } ).to_html()
+
+def get_farming_table_html_all():
+    farming: str = get_farming_inventory()
+    farming.drop(columns="locations", inplace = True)
+    # farming = farming.loc[(farming["explode1"]!="GEAR")]
+    # farming = farming.loc[(farming["explode1"]!="ISOITEM")]
+    # farming = farming.loc[(farming["explode1"]!="SHARD")]
+    farming.drop(columns = ["characterId", "explode2", "tier", "yellow"], inplace=True)
+    farming.sort_values(["id"], inplace=True)
     return farming.style.format(thousands=",",
                                 formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
                                           'tier': "{:.0f}",

@@ -35,7 +35,7 @@ from app.settings import get_msftools_sheetid, set_msftools_sheetid
 from .user import User
 from .msf_api import get_msf_api, API_SERVER
 from .gold import get_gold, update_gold
-from .farming import get_farming_table, get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc
+from .farming import get_farming_table, get_farming_table_html_all, get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc, get_farming_table_html_rs
 from .gear import get_gear
 from .gear_calculator import all_teams, gear_calculator
 from .hashes import hashes
@@ -254,7 +254,12 @@ def create_app(test_config=None):
     @login_required
     def farming_iso8():
         return render_template('farming.html', content=Markup(get_farming_table_html_iso8()))
-
+    
+    @app.route("/farming/rs")
+    @login_required
+    def farming_rs():
+        return render_template('farming.html', content=Markup(get_farming_table_html_rs()))
+    
     @app.route("/farming/char/all")
     @login_required
     def farming_char_all():
@@ -264,6 +269,11 @@ def create_app(test_config=None):
     @login_required
     def farming_misc():
         return render_template('farming.html', content=Markup(get_farming_table_html_misc()))
+    
+    @app.route("/farming/all")
+    @login_required
+    def farming_all():
+        return render_template('farming.html', content=Markup(get_farming_table_html_all()))
 
     @app.route("/log")
     @login_required
