@@ -33,7 +33,7 @@ def update_roster():
     # https://stackoverflow.com/questions/4205181/insert-into-a-mysql-table-or-update-if-exists
     if roster:
         # Clear current roster    
-        db.execute("DELETE FROM Roster WHERE 'user_id' = %s", (current_user.id,))
+        db.execute("DELETE FROM Roster WHERE user_id = %s", (current_user.id,))
         def dump_slots(char):
             char["gearSlots"] = json.dumps(char["gearSlots"])
             return char
