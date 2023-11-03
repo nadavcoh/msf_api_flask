@@ -6,6 +6,7 @@
 
 # Python standard libraries
 from datetime import timedelta
+import json
 from logging.config import dictConfig
 import os
 from time import time
@@ -33,7 +34,7 @@ from app.settings import get_msftools_sheetid, set_msftools_sheetid
 # Internal imports
 # from app.db import init_db_command
 from .user import User
-from .msf_api import get_msf_api, API_SERVER
+from .msf_api import get_msf_api, API_SERVER, set_msf_api_token
 from .gold import get_gold, update_gold
 from .farming import get_farming_table, get_farming_table_html_all, get_farming_table_html_char_all, get_farming_table_html_char_shards, get_farming_table_html_gear_gold_teal, get_farming_table_html_gear_purple_blue_green, get_farming_table_html_iso8, get_farming_table_html_misc, get_farming_table_html_rs
 from .gear import get_gear
@@ -187,6 +188,7 @@ def create_app(test_config=None):
         token = msf_api.authorize_access_token()
         # you can save the token into database
         # session['user'] = token['userinfo']
+        # user_id = token['userinfo']
         # profile = msf_api.get('/user', token=token)
         # a = msf_api.userinfo()
         
@@ -204,7 +206,8 @@ def create_app(test_config=None):
         if not user.get(user_id):
             User.create(id_ = user_id, name = user_name, icon = user_icon, frame = user_frame)
         login_user(user, remember=True, duration=timedelta(days=600))
-        session["token"] = token
+        # session["token"] = token
+        set_msf_api_token(token)
         session.permanent = True
         # g.msf_api = msf_api
 

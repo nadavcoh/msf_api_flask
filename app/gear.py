@@ -11,7 +11,7 @@ def get_gear_from_api(gear_id: str) -> dict:
               "pieceDirectCost": "full",
               "pieceFlatCost": "full",
               "subPieceInfo": "none"}
-    r = msf_api.get(API_SERVER + endpoint, params=params, token=session["token"])
+    r = msf_api.get(API_SERVER + endpoint, params=params)
     data = r.json()
     # if (current_chars_hash != data["meta"]["hashes"]["chars"]):
     current_chars_hash = data["meta"]["hashes"]["chars"]

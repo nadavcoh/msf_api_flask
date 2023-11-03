@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS My_Users;
 DROP TABLE IF EXISTS Inventory;
 DROP TABLE IF EXISTS Roster;
 DROP TABLE IF EXISTS Teams;
+DROP TABLE IF EXISTS OAuth2Token;
 
 CREATE TABLE My_Users (
   id TEXT PRIMARY KEY,
@@ -46,4 +47,16 @@ CREATE TABLE Teams (
   char5 TEXT,
   to_tier INT,
   FOREIGN KEY(user_id) REFERENCES My_Users(id)
+);
+
+CREATE TABLE OAuth2Token(
+  current_ip TEXT NOT NULL,
+  oauth_service_name TEXT NOT NULL,
+  token_type TEXT,
+  access_token TEXT,
+  refresh_token TEXT,
+  expires_at INT,
+  user_id TEXT NOT NULL,
+  FOREIGN KEY(user_id) REFERENCES My_Users(id),
+  CONSTRAINT PK_OAuth2Token PRIMARY KEY (user_id, current_ip, oauth_service_name)
 );

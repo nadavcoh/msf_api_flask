@@ -14,7 +14,7 @@ def get_gold_from_api():
             "type": "milestone",
             "objRewards": "full",
             "pieceInfo": "none"}
-    r = msf_api.get(endpoint, params=params, token=session["token"])
+    r = msf_api.get(endpoint, params=params)
     events = r.json()
     current_time = time()
     current_gold_milestone = [event for event in events["data"] if (event["name"] == "Golden Dimension" or event["name"] == "Golden Opportunity") and event["startTime"] < current_time and event["endTime"] > current_time][0]["milestone"]

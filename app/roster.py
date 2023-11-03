@@ -64,7 +64,7 @@ def find_char_in_roster (id):
     db = get_db()
     resp = db.execute("""SELECT char_id, tier, slots, yellow, red 
                         FROM Roster  
-                        WHERE "user_id" = %s AND char_id = %s;
+                        WHERE user_id = %s AND char_id = %s;
                         """, (current_user.id, id)).fetchone()
     if resp:
         char = dict(resp)
