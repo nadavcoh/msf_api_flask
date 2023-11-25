@@ -40,6 +40,7 @@ from .farming import get_farming_table, get_farming_table_html_all, get_farming_
 from .gear import get_gear
 from .gear_calculator import all_teams, gear_calculator
 from .hashes import hashes
+from .orbs import orbs
 
 def create_app(test_config=None):
     # Logger https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
@@ -313,6 +314,7 @@ def create_app(test_config=None):
 
     app.register_blueprint(gear_calculator)
     app.register_blueprint(hashes)
+    app.register_blueprint(orbs)
 
     from . import db
     db.init_app(app)
