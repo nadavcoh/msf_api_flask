@@ -119,11 +119,11 @@ def calculate_team_analysis():
                         , "portrait": char_data["portrait"]
                         , "traits": traits
                         }]
-                    if traits_intersect:
-                        traits_intersect = traits_intersect.intersection(traits)
-                    else:
+                    if char_num == 0:
                         traits_intersect = traits
-                char_num = char_num + 1
+                    else:
+                        traits_intersect = traits_intersect.intersection(traits)
+                    char_num = char_num + 1
             teams_analysis.at[team_id, "intersection"] = traits_intersect
             team_id = team_id + 1
             tab_order = tab_order + 1
@@ -150,3 +150,38 @@ def get_team_analysis():
         set_data_to_cache(key=key_name, value=data)
         data["data"] = pd.DataFrame(json.loads(data["data"]))
         return data
+    
+@teams.route('/analysis_city_hero')
+@login_required
+def analysis_city_hero():
+    teams_analysis = get_team_analysis()["data"]
+    cond1 = teams_analysis["intersection"].apply(lambda x: "Villain" in [trait[0] for trait in x])
+    cond2 = teams_analysis["intersection"].apply(lambda x: "City" in [trait[0] for trait in x])
+    teams_analysis = teams_analysis.loc[cond1 & cond2]
+    return render_template('teams_analysis.html', content=Markup(teams_analysis.style.format(
+        formatter={'total': "{:.0f}",
+                   'tab_order': "{:.0f}",
+                   'char0': format_char,
+                   'char1': format_char,
+                   'char2': format_char,
+                   'char3': format_char,
+                   'char4': format_char,
+                   "intersection": format_traits}
+    ).to_html()))
+
+@teams.route('/analysis_no_intersection')
+@login_required
+def analysis_no_intersection():
+    teams_analysis = get_team_analysis()["data"]
+    teams_analysis = teams_analysis.loc[teams_analysis["intersection"].apply(len) == 0]
+    # "City" in [trait[0] for trait in teams_analysis["intersection"]]
+    return render_template('teams_analysis.html', content=Markup(teams_analysis.style.format(
+        formatter={'total': "{:.0f}",
+                   'tab_order': "{:.0f}",
+                   'char0': format_char,
+                   'char1': format_char,
+                   'char2': format_char,
+                   'char3': format_char,
+                   'char4': format_char,
+                   "intersection": format_traits}
+    ).to_html()))
