@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Teams{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for tab in tabs %}
+    <h1>{{ tab }}</h1>
+    {% for team in get_teams(tab)["data"] %}
+      <article class="post">
+        <header>
+          <div>
+            <h1>{{ team["total"] }}</h1>
+            <div class="about">?</div>
+          </div>
+        </header>
+      <ul class="team_list">
+      {% for char in team["squad"] %}
+        {% set char_data = get_char(char)["data"] %}
+        <li>
+        <img src="{{ char_data["portrait"] }}"><br>
+        <b>{{ char_data["name"] }}</b><br>
+        {% for trait in char_data["traits"] %}
+          {{ trait["name"] }}<br>
+        {% endfor %}
+        </li>
+      {% endfor %}
+      </ul>
+    </article>
+      {% if not loop.last %}
+        <hr>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

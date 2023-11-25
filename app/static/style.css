@@ -223,3 +223,25 @@ html {
 .mid {
   width: 70px;
 }
+ul.team_list{
+  list-style-type: none;
+}
+
+ul.team_list > li {
+  display: inline-block;
+  text-align: center;
+  vertical-align: text-top;
+}
+
+ul.team_list > li > img {
+  max-height: 100px;
+}
+
+.data, .row_heading {
+  vertical-align: top;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
