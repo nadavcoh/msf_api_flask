@@ -361,4 +361,4 @@ def index():
             orbs_results = add_to_results(orbs_results, result)
 
     current_app.logger.info("Done")
-    return render_template('orbs.html', orbs_results = orbs_results, get_gear = get_gear)
+    return render_template('orbs.html', orbs_results = orbs_results, get_gear = get_gear, get_otb = get_orb)
