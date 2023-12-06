@@ -200,7 +200,7 @@ def get_farming_table_html_rs():
     farming.drop(columns="locations", inplace = True)
     farming = farming.loc[(farming["explode1"]=="RS")]
     farming.sort_values(["red", "red_delta"], ascending=[False, Fales] , inplace=True)
-    farming.drop(columns = ["id", "explode1", "explode2", "explode3", "explode4"], inplace=True)
+    farming.drop(columns = ["explode1", "explode2", "explode3", "explode4"], inplace=True)
     return farming.style.format(thousands=",",
                                 formatter={'icon': lambda x: "<img class='reward_icon' src='{}'>".format(x),
                                           'tier': "{:.0f}",
