@@ -113,6 +113,7 @@ def get_inventory_data (row):
     char = find_char_in_roster(gear_data["data"].get("characterId"))
     return {"id": row["id"],
             "inventory": find_item_in_inventory(row["id"]),
+            "inventory_char": find_item_in_inventory(gear_data["data"].get("characterId"))
             "yellow": char.get("yellow"),
             "red": char.get("red"),
             "red_delta": (char.get("yellow") - char.get("red")) if char else ""}
