@@ -78,3 +78,12 @@ def get_inventory_update_time():
         update_inventory()
         resp = get_inventory_update_time()
     return resp
+
+def find_items_in_inventory (item):
+    get_inventory_update_time()
+    db = get_db()
+    resp = db.execute("""SELECT item, quantity 
+                        FROM Inventory  
+                        WHERE "user_id" = %s AND item like %s;
+                        """, (current_user.id, item+"%")).fetchall()
+    return resp

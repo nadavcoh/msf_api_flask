@@ -73,7 +73,14 @@ def find_char_in_roster (id):
         char = {}
     return char
 
-
+def get_roster():
+    get_roster_update_time()
+    db = get_db()
+    resp = db.execute("""SELECT char_id, tier, slots, yellow, red 
+                        FROM Roster  
+                        WHERE user_id = %s;
+                        """, (current_user.id,)).fetchall()
+    return resp
     # Slots are listed in order, top to bottom on the left, then top to bottom on the right.
 
 def get_roster_update_time():
